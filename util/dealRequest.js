@@ -101,10 +101,46 @@ const create = (req, res) => {
 
 }
 
+login = (req, res) => {
+  return new Promise((resolve,reject) => {
+    const { body } = req;
+    const { username, password } = body || {};
+    const sql = `select * from users  where username='${username}' and password='${password}'`;
+
+    exec(sql).then(res => {
+      if (!res.length) {
+        reject('您还没有注册');
+
+        return;
+      }
+
+      resolve(1);
+    })
+  })
+}
+
+register = (req, res) => {
+  return new Promise((resolve,reject) => {
+    const { body } = req || {};
+    const { username, password } = body || {};
+    const sql = `insert into users(username, password, realname) values('${username}', '${password}', 'default')`;
+
+    exec(sql).then(result => {
+      const { insertId } = result;
+
+      resolve(insertId);
+    }, error => {
+      reject('创造失败')
+    })
+  })  
+
+}
 module.exports = {
   getList,
   getItem,
   deleteItem,
   updateItem,
-  create
+  create,
+  login,
+  register
 };

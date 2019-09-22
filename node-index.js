@@ -5,7 +5,9 @@ const {
   getItem,
   deleteItem,
   updateItem,
-  create
+  create,
+  login,
+  register
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -58,5 +60,19 @@ routers.post("/api/create", (req, res) => {
 
 // 登陆接口
 routers.post("/api/login", (req, res) => {
-  res.end(JSON.stringify(new SuccessModal({}, "请求成功")));
+  //res.end(JSON.stringify(new SuccessModal({}, "请求成功")));
+  login(req, res).then(result => {
+    res.end(JSON.stringify(new SuccessModal(result, "登录成功")));
+  }, error => {
+    res.end(JSON.stringify(new ErrorModal("", error)))
+  })
 });
+
+// 注册接口1
+routers.post("/api/register", (req, res) => {
+  register(req, res).then(result => {
+    res.end(JSON.stringify(new SuccessModal(result, "注册成功")))
+  }, error => {
+    res.end(JSON.stringify(new ErrorModal("", error)))
+  })
+})
