@@ -1,22 +1,26 @@
 <template>
-  <el-form label-width="80px" class="login" :rules="rules" :model="loginForm" ref="loginForm">
-    <el-form-item label="用户名" prop="username">
-      <el-input placeholder="请输入用户名" v-model="loginForm.username" />
-    </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input placeholder="请输入密码" v-model="loginForm.password" />
-    </el-form-item>
-    <el-form-item class="btn">
-      <el-button type="primary" @click="login">登录</el-button>
-      <router-link to="register">
-        <el-button type="primary" @click="register">注册</el-button>
-      </router-link>
-    </el-form-item>
-  </el-form>
+  <div class="bg">
+    <el-form label-width="80px" class="login" :rules="rules" :model="loginForm" ref="loginForm">
+      <el-form-item label="用户名" prop="username">
+        <el-input placeholder="请输入用户名" v-model="loginForm.username" />
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input placeholder="请输入密码" v-model="loginForm.password" />
+      </el-form-item>
+      <el-form-item class="btn" label="">
+        <el-button type="primary" @click="login">登录</el-button>
+        <router-link to="register">
+          <el-button type="primary">注册</el-button>
+        </router-link>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
-<style type='text/css'>
-body {
-  background-image: url("https://img.infinitynewtab.com/wallpaper/2380.jpg");
+<style lang="less">
+.bg {
+  background-image: url("../img/bg3.jpg");
+  background-size: 100%;
+  height: 100vh;
 }
 
 .login {
@@ -25,17 +29,25 @@ body {
   top: 50%;
   transform: translate(-50%, -50%);
   width: 300px;
+
+  .el-form-item__label {
+    color: #fff;
+  }
+
+  .el-form-item__content {
+    margin-left: 80px;
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
-.btn {
-  display: flex;
-  justify-content: space-between;
-}
+
 </style>
 <script>
 import Vue from "vue";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
 import axios from "axios";
+import store from 'store';
 
 Vue.use(Form);
 Vue.use(Input);
@@ -45,6 +57,9 @@ Vue.use(Button);
 
 export default {
   name: "Login",
+  mounted: () => {
+    store.set('userInfo', {});
+  },
   data: () => ({
     loginForm: {
       username: "",
@@ -72,12 +87,19 @@ export default {
       this.$refs["loginForm"].validate(valid => {
         if (valid) {
           axios.post("/api/login", { username, password }).then(res => {
-            const { error } = res.data;
+            const { error, data } = res.data;
+            const { token } = data || {};
 
             if (error === 0) {
               Message.success({
                 message: "登录成功"
               });
+              
+              // 把信息写入store
+              store.set('userInfo', {username, token});
+
+              // 跳转到home主页面
+              this.$router.push("/home");
             } else {
               Message.error({
                 message: "您还没有注册"
@@ -87,7 +109,6 @@ export default {
         }
       });
     },
-    register: function() {}
   }
 };
 </script>

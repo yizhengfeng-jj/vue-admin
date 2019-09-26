@@ -1,11 +1,10 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+  <router-view></router-view>
 </template>
 <style type='text/css'>
 body {
-  background-image: url("https://img.infinitynewtab.com/wallpaper/2380.jpg");
+  margin: 0;
+  padding: 0;
 }
 </style>
 <script>

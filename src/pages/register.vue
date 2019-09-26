@@ -1,20 +1,28 @@
 <template>
-  <el-form label-width="80px" class="login" :model="registerForm" :rules="rules" ref="register">
-    <el-form-item label="用户名" prop="username">
-      <el-input placeholder="请输入用户名" v-model="registerForm.username" />
-    </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input placeholder="请输入密码" v-model="registerForm.password" />
-    </el-form-item>
-    <el-form-item label="确认密码" prop="confirmPassword">
-      <el-input placeholder="请输入密码" v-model="registerForm.confirmPassword" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="register" class="btn-regitser">注册</el-button>
-    </el-form-item>
-  </el-form>
+  <div class="bg">
+    <el-form label-width="80px" class="login" :model="registerForm" :rules="rules" ref="register">
+      <el-form-item label="用户名" prop="username">
+        <el-input placeholder="请输入用户名" v-model="registerForm.username" />
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input placeholder="请输入密码" v-model="registerForm.password" />
+      </el-form-item>
+      <el-form-item label="确认密码" prop="confirmPassword">
+        <el-input placeholder="请输入密码" v-model="registerForm.confirmPassword" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="register" class="btn-regitser">注册</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 <style type='text/css'>
+.bg {
+  background-image: url("../img/bg3.jpg");
+  background-size: 100%;
+  height: 100vh;
+}
+
 .login {
   position: absolute;
   left: 50%;
@@ -30,6 +38,7 @@
 import Vue from "vue";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
 import axios from "axios";
+import store from 'store';
 
 Vue.use(Form);
 Vue.use(Input);
@@ -39,6 +48,9 @@ Vue.use(Button);
 
 export default {
   name: "register",
+  mounted: () => {
+    store.set('userInfo', {});
+  },
   data: function() {
     const that = this;
 

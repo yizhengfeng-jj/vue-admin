@@ -1,4 +1,5 @@
 const url = require('url');
+const jwt = require('jsonwebtoken');
 const { dealPost, dealGet, dealUrl } = require("./dealData");
 const routersList = {
   getList: {},
@@ -8,7 +9,21 @@ const routersList = {
 
 const routers = (req, res) => {
   // 设置中文乱码
+ 
   res.writeHead(200, { "content-Type": "text/html;charset=utf8" });
+
+  // 获取请求投Authorization
+  const authorization = req.headers.authorization;
+  let ifLogin;
+  try{
+    ifLogin = jwt.verify(authorization, 'json');
+  }catch{
+    ifLogin = false;
+  }
+
+  req.ifLogin = ifLogin && true;
+ // 把cookie写入cookie
+//  res.writeHeader('setCookie', "userInfo=aaa");
 
   // 获取路由路径
   const urlPath = dealUrl(req.url);
@@ -24,10 +39,10 @@ const routers = (req, res) => {
   if (method === "post" && routersList.postList[routerPath]) {
     // 如果是post的请求把post请求体写入body
     dealPost(req, res).then(() => {
+      
       routersList.postList[routerPath](req, res); // 执行函数
     }, error => {
-        console.log(error, 666666);
-        res.end(JSON.stringify(error));
+        return res.end(JSON.stringify(error));
     });
   }
 

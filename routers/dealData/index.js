@@ -10,7 +10,6 @@ const dealPost = (req, res) => {
     });
 
     req.on("end", () => {
-      // console.log(typeof chunks, 'chunks');
       try {
         JSON.parse(chunks);
       } catch (error) {
