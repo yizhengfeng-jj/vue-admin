@@ -2,13 +2,15 @@ const http = require("http");
 const { routers } = require("./routers");
 const {
   getList,
-  getItem,
-  deleteItem,
-  updateItem,
-  create,
+  getSimpleBlog,
+  deleteSimple,
+  updateSimpleBlog,
+  createBlog,
   login,
   register,
-  getUserInfo
+  getUserInfo,
+  upload,
+  editorUserInfo
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -21,9 +23,9 @@ routers.get("/api/getList", (req, res) => {
   });
 });
 
-// 获取单个详情的接口1
-routers.get("/api/getItem", (req, res) => {
-  getItem(req, res).then(
+// 获取单个详情的接口
+routers.get("/api/getSimpleBlog", (req, res) => {
+  getSimpleBlog(req, res).then(
     result => {
       return res.end(JSON.stringify(new SuccessModal(result, "请求成功")));
     },
@@ -34,8 +36,8 @@ routers.get("/api/getItem", (req, res) => {
 });
 
 // 这个是删除的接口
-routers.get("/api/delete", (req, res) => {
-  deleteItem(req, res).then(
+routers.get("/api/deleteSimple", (req, res) => {
+  deleteSimple(req, res).then(
     result => {
       return res.end(JSON.stringify(new SuccessModal("", result)));
     },
@@ -45,16 +47,16 @@ routers.get("/api/delete", (req, res) => {
   );
 });
 
-// 这个是更新的接口
-routers.post("/api/update", (req, res) => {
-  updateItem(req, res).then(result => {
+// 这个是更新的接chengg
+routers.post("/api/updateSimpleBlog", (req, res) => {
+  updateSimpleBlog(req, res).then(result => {
     return res.end(JSON.stringify(new SuccessModal("", result)));
   });
 });
 
 // 这个是新建的接口
-routers.post("/api/create", (req, res) => {
-  create(req, res).then(result => {
+routers.post("/api/createBlog", (req, res) => {
+  createBlog(req, res).then(result => {
     return res.end(JSON.stringify(new SuccessModal(result, "请求成功")));
   });
 });
@@ -62,28 +64,58 @@ routers.post("/api/create", (req, res) => {
 // 登陆接口
 routers.post("/api/login", (req, res) => {
   //res.end(JSON.stringify(new SuccessModal({}, "请求成功")));
-  login(req, res).then(result => {    
-    return res.end(JSON.stringify(new SuccessModal(result, "登录成功")));
-  }, error => {
-    return res.end(JSON.stringify(new ErrorModal("", error)))
-  })
+  login(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result, "登录成功")));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
 });
 
 // 注册接口
 routers.post("/api/register", (req, res) => {
+  return register(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result, "注册成功")));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
 
-  register(req, res).then(result => {
-    return res.end(JSON.stringify(new SuccessModal(result, "注册成功")))
-  }, error => {
-    return res.end(JSON.stringify(new ErrorModal("", error)))
-  })
-})
-
-// 个人信息接口
+// 获取个人信息接口
 routers.get("/api/getUserInfo", (req, res) => {
-  getUserInfo(req, res).then(result => {
-    return res.end(JSON.stringify(new SuccessModal(result)))
+  getUserInfo(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
+
+// 修改个人接口1
+routers.post('/api/editorUserInfo', (req, res) => {
+  editorUserInfo(req, res).then(result => {
+    return res.end(JSON.stringify(new SuccessModal(result)));
   }, error => {
-    return res.end(JSON.stringify(new ErrorModal("", error)))
+    return res.end(JSON.stringify(new ErrorModal("", error)));
   })
-})
+});
+
+// 上传接口
+routers.post("/api/upload", (req, res) => {
+  upload(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
+

@@ -7,7 +7,7 @@
       <el-form-item label="密码" prop="password">
         <el-input placeholder="请输入密码" v-model="loginForm.password" />
       </el-form-item>
-      <el-form-item class="btn" label="">
+      <el-form-item class="btn" label>
         <el-button type="primary" @click="login">登录</el-button>
         <router-link to="register">
           <el-button type="primary">注册</el-button>
@@ -40,14 +40,13 @@
     justify-content: space-between;
   }
 }
-
-
 </style>
 <script>
 import Vue from "vue";
+import { mapActions } from "vuex";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
 import axios from "axios";
-import store from 'store';
+import store from "store";
 
 Vue.use(Form);
 Vue.use(Input);
@@ -58,7 +57,7 @@ Vue.use(Button);
 export default {
   name: "Login",
   mounted: () => {
-    store.set('userInfo', {});
+    store.set("userInfo", {});
   },
   data: () => ({
     loginForm: {
@@ -81,25 +80,35 @@ export default {
     }
   }),
   methods: {
+    ...mapActions(["changeUserInfo"]),
     login: function() {
       const { username, password } = this.loginForm;
 
       this.$refs["loginForm"].validate(valid => {
         if (valid) {
           axios.post("/api/login", { username, password }).then(res => {
-            const { error, data } = res.data;
-            const { token } = data || {};
+            const { error, data } = res;
+            const { token, userId } = data || {};
+
+            store.set("httpInfo", { userId, token });
 
             if (error === 0) {
-              Message.success({
-                message: "登录成功"
-              });
-              
-              // 把信息写入store
-              store.set('userInfo', {username, token});
+              axios.get(`/api/getUserInfo?userId=${userId}`).then(result => {
+                const { error, data } = result;
+                const { imgPath } = data || {};
 
-              // 跳转到home主页面
-              this.$router.push("/home");
+                // 把信息写入store
+                store.set("userInfo", { ...data, token, userId });
+
+                Message.success({
+                  message: "登录成功"
+                });
+
+                this.changeUserInfo(data);
+
+                // 跳转到home主页面
+                this.$router.push("/home/selfDetail");
+              });
             } else {
               Message.error({
                 message: "您还没有注册"
@@ -108,7 +117,7 @@ export default {
           });
         }
       });
-    },
+    }
   }
 };
 </script>

@@ -38,7 +38,7 @@
 import Vue from "vue";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
 import axios from "axios";
-import store from 'store';
+import store from "store";
 
 Vue.use(Form);
 Vue.use(Input);
@@ -49,7 +49,7 @@ Vue.use(Button);
 export default {
   name: "register",
   mounted: () => {
-    store.set('userInfo', {});
+    store.set("userInfo", {});
   },
   data: function() {
     const that = this;
@@ -102,12 +102,20 @@ export default {
       this.$refs["register"].validate(valid => {
         if (valid) {
           axios.post("/api/register", { username, password }).then(result => {
-            Message.success({
-              message: "注册成功"
-            });
+            const { error, data } = result;
 
-            // 跳转到登陆页面
-            this.$router.push("/login");
+            if (!result.error) {
+              Message.success({
+                message: "注册成功"
+              });
+
+              // 跳转到登陆页面
+              this.$router.push("/login");
+            } else {
+              Message.error({
+                message: "注册失败"
+              });
+            }
           });
         }
       });

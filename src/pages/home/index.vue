@@ -2,8 +2,8 @@
   <el-container>
     <div>
       <el-header class="aside-header">
-        <img src="../../img/self.jpg" />
-        <span>{{userInfo.username}}</span>
+        <img :src="userInfo.imgPath" />
+        <span>{{userInfo.userName}}</span>
       </el-header>
       <el-aside class="aside">
         <el-menu
@@ -38,13 +38,13 @@
               <span>博客中心</span>
             </template>
             <el-menu-item index="2-1">
-             <router-link to="/home/selfDetail" slot="title">
+              <router-link to="/home/blogs/info/new" slot="title">
                 <i class="el-icon-document"></i>
                 <span>博客中心</span>
               </router-link>
             </el-menu-item>
             <el-menu-item index="2-2">
-              <router-link to="/home/selfDetail" slot="title">
+              <router-link to="/home/blogs/show" slot="title">
                 <i class="el-icon-document"></i>
                 <span>博客预览</span>
               </router-link>
@@ -73,7 +73,7 @@
           <i class="el-icon-question"></i>
           <i class="el-icon-message"></i>
           <div class="header_operator_info">
-            <img src="../../img/self.jpg" />
+            <img :src="userInfo.imgPath" />
             <span>{{userInfo.username}}</span>
           </div>
           <el-select v-model="lang" class="header_operator_lang">
@@ -94,8 +94,8 @@
 </template>
 <script>
 import Vue from "vue";
-import axios from '../../service/http';
-import store from 'store';
+import store from "store";
+import { mapState, mapActions } from "vuex";
 import {
   Container,
   Header,
@@ -107,6 +107,7 @@ import {
   Select,
   Option
 } from "element-ui";
+import axios from "../../service/http";
 
 Vue.use(Container);
 Vue.use(Header);
@@ -120,18 +121,33 @@ Vue.use(Option);
 
 export default {
   name: "Home",
-  mounted: function () {
+  computed: {
+    ...mapState(["imgPath", "userInfo"])
+  },
+  methods: {
+    ...mapActions(["changeImgPath", "changeUserInfo"])
+  },
+  mounted: function() {
     // 设置数据
-    this.userInfo = store.get('userInfo') || {};
+    //const userInfo = store.get("userInfo") || {};
 
-    axios.get('/api/getUserInfo').then(result => {
-      console.log(result);
-    });
+    //this.changeUserInfo(userInfo);
 
+    // axios.get(`/api/getUserInfo?userId=${userId}`).then(result => {
+    //   const { error, data } = result;
+    //   const { imgPath } = data || {};
+
+    //   console.log(data, 888);
+    //   //this.userInfo = data;
+
+    //   // 发送actions
+    //   this.changeImgPath(imgPath);
+    //   this.changeUserInfo(data);
+    // });
   },
   data: () => {
     return {
-      userInfo: {},
+      page: 12,
       state: false,
       langOptions: [
         {
@@ -152,7 +168,7 @@ export default {
   }
 };
 </script>
-<style scoped lang="less">
+<style  lang="less">
 /* 更改element-ui样式 */
 .menu-demo {
   /deep/ .is-active {
@@ -174,6 +190,11 @@ a {
   width: 100%;
   display: inline-block;
 }
+
+p {
+  margin: 0;
+}
+/* 更改全局样式结束*/
 .aside-header {
   line-height: 60px;
   background-color: #001529;
