@@ -1,5 +1,5 @@
 const { exec } = require("./dataBase");
-const moment = require('moment');
+const moment = require("moment");
 const addSecurit = require("./crypto");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
@@ -128,36 +128,42 @@ login = (req, res) => {
   return new Promise((resolve, reject) => {
     const { body } = req;
     const { username, password } = body || {};
-    const loginTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+    const loginTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
     const sql = `select * from users  where username='${username}' and password='${password}'`;
 
-    exec(sql).then(result => {
-      if (!result.length) {
-        reject("您还没有注册");
+    exec(sql).then(
+      result => {
+        if (!result.length) {
+          reject("您还没有注册");
 
-        return;
+          return;
+        }
+
+        //res.setHeader('Set-Cookie', `userName=${username}; path=/;`);
+        const { userId } = result[0];
+
+        // 生成token
+        const token = jwt.sign(
+          { userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 },
+          "json"
+        );
+
+        resolve({ userId, token });
+
+        const insertSql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
+        exec(insertSql).then(
+          res => {
+            // resolve({ userId, token });
+          },
+          error => {
+            console.log(error, 22);
+          }
+        );
+      },
+      error => {
+        console.log(error, 5555);
       }
-
-      //res.setHeader('Set-Cookie', `userName=${username}; path=/;`);
-      const { userId } = result[0];
-
-      // 生成token
-      const token = jwt.sign(
-        { userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 },
-        "json"
-      );
-       
-      resolve({ userId, token });
-
-      const insertSql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
-      exec(insertSql).then(res => {
-        // resolve({ userId, token });
-      }, error => {
-        console.log(error, 22);
-      })
-    }, error => {
-      console.log(error, 5555);
-    });
+    );
   });
 };
 
@@ -253,6 +259,24 @@ const upload = (req, res) => {
   });
 };
 
+// 获取登录总次数接口
+const getLoginCount = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql = `select date_format(loginTime, '%Y-%m-%d') as time, count(loginCount) as num from loginCount where date(loginTime) > date(date_sub(now(), interval 7 day)) group by time`;
+
+    exec(sql).then(
+      res => {
+        if (res.length) {
+          resolve(res);
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  });
+};
+
 module.exports = {
   getList,
   getSimpleBlog,
@@ -263,5 +287,6 @@ module.exports = {
   register,
   getUserInfo,
   upload,
-  editorUserInfo
+  editorUserInfo,
+  getLoginCount
 };

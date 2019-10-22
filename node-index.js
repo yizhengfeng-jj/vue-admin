@@ -10,7 +10,8 @@ const {
   register,
   getUserInfo,
   upload,
-  editorUserInfo
+  editorUserInfo,
+  getLoginCount
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -99,12 +100,15 @@ routers.get("/api/getUserInfo", (req, res) => {
 });
 
 // 修改个人接口1
-routers.post('/api/editorUserInfo', (req, res) => {
-  editorUserInfo(req, res).then(result => {
-    return res.end(JSON.stringify(new SuccessModal(result)));
-  }, error => {
-    return res.end(JSON.stringify(new ErrorModal("", error)));
-  })
+routers.post("/api/editorUserInfo", (req, res) => {
+  editorUserInfo(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
 });
 
 // 上传接口
@@ -119,3 +123,14 @@ routers.post("/api/upload", (req, res) => {
   );
 });
 
+// 获取一周登录数据
+routers.get("/api/getLoginCount", (req, res) => {
+  getLoginCount(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});

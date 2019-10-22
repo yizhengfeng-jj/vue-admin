@@ -51,8 +51,10 @@
             </el-menu-item>
           </el-submenu>
           <el-menu-item index="3">
-            <i class="el-icon-document"></i>
-            <span slot="title">dashboard</span>
+            <router-link to="/home/dashboard" slot="title">
+              <i class="el-icon-document"></i>
+              <span>dashboard</span>
+            </router-link>
           </el-menu-item>
           <el-menu-item index="4">
             <i class="el-icon-document"></i>
@@ -130,16 +132,12 @@ export default {
   mounted: function() {
     // 设置数据
     //const userInfo = store.get("userInfo") || {};
-
     //this.changeUserInfo(userInfo);
-
     // axios.get(`/api/getUserInfo?userId=${userId}`).then(result => {
     //   const { error, data } = result;
     //   const { imgPath } = data || {};
-
     //   console.log(data, 888);
     //   //this.userInfo = data;
-
     //   // 发送actions
     //   this.changeImgPath(imgPath);
     //   this.changeUserInfo(data);
@@ -179,7 +177,13 @@ export default {
   /deep/ .el-submenu .el-menu-item {
     padding: 0 !important;
   }
+
+  > li > a{
+     padding: 0 20px 0 0;
+  }
 }
+
+
 /* 更改全局样式 */
 a {
   text-decoration: none;
@@ -255,6 +259,7 @@ p {
 }
 
 .aside {
+  width: 256px !important;
   overflow: hidden;
   background-color: #001529;
   min-height: 100vh;
