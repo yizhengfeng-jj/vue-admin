@@ -1,0 +1,66 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+  mode: "development",
+  entry: ["@babel/polyfill", "./axios.test.js"],
+  output: {
+    filename: "bundle.js"
+  },
+  devServer: {
+    port: 7000,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000"
+      }
+    }
+  },
+  devtool: "source-map",
+  resolve: {
+    alias: {
+      vue: "vue/dist/vue",
+      "@": path.resolve("src"),
+      Components: path.resolve("src/components")
+    },
+    extensions: [".js", ".vue"]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.less$/,
+        use: ["style-loader", "css-loader", "less-loader"]
+      },
+      {
+        test: /\.js$/,
+        use: "babel-loader"
+      },
+      {
+        test: /\.vue$/,
+        use: "vue-loader"
+      },
+      {
+        test: /\.(woff|ttf|eot)$/,
+        use: "file-loader"
+      },
+      {
+        test: /\.(jpg|jpeg|gif|png)/,
+        use: {
+          loader: "url-loader",
+          options: {
+            limit: 8000
+          }
+        }
+      }
+    ]
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "index.html"
+    })
+  ]
+};

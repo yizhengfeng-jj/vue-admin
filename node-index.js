@@ -11,7 +11,8 @@ const {
   getUserInfo,
   upload,
   editorUserInfo,
-  getLoginCount
+  getLoginCount,
+  getWordCloud
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -133,4 +134,41 @@ routers.get("/api/getLoginCount", (req, res) => {
       return res.end(JSON.stringify(new ErrorModal("", error)));
     }
   );
+});
+
+// 获取标签云接口
+routers.get("/api/getWordCloud", (req, res) => {
+  getWordCloud(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
+
+// 测试代码
+let sleep = false;
+let count = 0;
+routers.get("/api/test", (req, res) => {
+  count === 0 &&
+    setTimeout(() => {
+      sleep = true;
+    }, 35000);
+
+  count++;
+
+  if (!sleep) {
+    res.end(JSON.stringify({ status: 0 }));
+  } else {
+    sleep = false;
+    count = 0;
+
+    res.end(JSON.stringify({ status: 1 }));
+  }
+});
+
+routers.post("/api/submit", (req, res) => {
+  res.end(JSON.stringify({ status: 3, id: "fe5asdasd-adsasd45asd5-asd12" }));
 });

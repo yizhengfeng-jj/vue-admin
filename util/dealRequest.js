@@ -277,6 +277,50 @@ const getLoginCount = (req, res) => {
   });
 };
 
+// 获取标签云接口
+const getWordCloud = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql = `select tags from blog`;
+
+    exec(sql).then(res => {
+      let tagsArr = [];
+      let result = [];
+      const objTags = {};
+
+      res.forEach(item => {
+        const { tags } = item || {};
+        const arr = typeof tags === "string" ? tags.split(",") : tags;
+        tagsArr = tagsArr.concat(arr);
+      });
+
+      tagsArr.forEach(item => {
+        if (!objTags[item]) {
+          objTags[item] = 1;
+        } else {
+          objTags[item] += 1;
+        }
+      });
+
+      for (let key in objTags) {
+        if (Object.prototype.hasOwnProperty.call(objTags, key)) {
+          result.push({ name: key, weight: objTags[key] });
+        }
+      }
+
+      resolve(result);
+    });
+  });
+};
+
+// const test = (req, res) => {
+//   const sleep = false;
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       resolve('得到结果');
+//     }, 35000);
+//   })
+// }
+
 module.exports = {
   getList,
   getSimpleBlog,
@@ -288,5 +332,6 @@ module.exports = {
   getUserInfo,
   upload,
   editorUserInfo,
-  getLoginCount
+  getLoginCount,
+  getWordCloud
 };
