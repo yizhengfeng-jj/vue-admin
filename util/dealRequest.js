@@ -176,7 +176,6 @@ register = (req, res) => {
     const userId = addSecurit(username);
     const sql = `insert into users(userName, userId, password, nickName, ifUpload) values('${username}', '${userId}', '${password}', 'default', 0)`;
 
-    console.log(sql);
     return exec(sql).then(
       result => {
         const { insertId } = result;
@@ -219,9 +218,9 @@ const getUserInfo = (req, res) => {
 const editorUserInfo = (req, res) => {
   return new Promise((resolve, reject) => {
     const { body } = req || {};
-    const { userId } = req.headers;
+    const { userid } = req.headers;
     const { userName, nickName, email, description, tags, signature } = body;
-    const sql = `update users set username='${userName}', nickname='${nickName}', email='${email}', description='${description}', tags='${tags}', signature='${signature}' where userId='${userId}'`;
+    const sql = `update users set username='${userName}', nickname='${nickName}', email='${email}', description='${description}', tags='${tags}', signature='${signature}' where userId='${userid}'`;
 
     exec(sql).then(result => {
       const { affectedRows } = result || {};
@@ -312,6 +311,31 @@ const getWordCloud = (req, res) => {
   });
 };
 
+// 获取活跃用户
+const getActiveAuthor = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql = `select author,count(author) as num from blog group by author`;
+
+    exec(sql).then(result => {
+      resolve(result);
+    });
+  });
+};
+
+// 获取最大博客量用户信息
+const getMaxBlog = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql = `select author,count(author) as num from blog group by author order by num desc limit 1`;
+    
+
+    exec(sql).then(result => {
+      const data = Array.isArray(result) ? result[0] : result;
+
+      resolve(data);
+    });
+  });
+};
+
 // const test = (req, res) => {
 //   const sleep = false;
 //   return new Promise((resolve, reject) => {
@@ -333,5 +357,7 @@ module.exports = {
   upload,
   editorUserInfo,
   getLoginCount,
-  getWordCloud
+  getWordCloud,
+  getActiveAuthor,
+  getMaxBlog
 };

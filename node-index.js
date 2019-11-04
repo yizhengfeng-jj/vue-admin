@@ -12,7 +12,9 @@ const {
   upload,
   editorUserInfo,
   getLoginCount,
-  getWordCloud
+  getWordCloud,
+  getActiveAuthor,
+  getMaxBlog
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -139,6 +141,30 @@ routers.get("/api/getLoginCount", (req, res) => {
 // 获取标签云接口
 routers.get("/api/getWordCloud", (req, res) => {
   getWordCloud(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
+
+// 获取活跃用户
+routers.get("/api/getActiveAuthor", (req, res) => {
+  getActiveAuthor(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
+
+// 获取最大博客用户信息
+routers.get("/api/getMaxBlog", (req, res) => {
+  getMaxBlog(req, res).then(
     result => {
       return res.end(JSON.stringify(new SuccessModal(result)));
     },

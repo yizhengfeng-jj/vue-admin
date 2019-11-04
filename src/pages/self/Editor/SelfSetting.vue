@@ -68,9 +68,6 @@ export default {
   components: {
     InputLabel
   },
-  updated: function() {
-    console.log("父组件更新?");
-  },
   mounted: function() {
     const { token, userId } = store.get("httpInfo") || {};
 
@@ -89,7 +86,6 @@ export default {
       signature
     } = store.get("userInfo");
 
-    console.log(tags, 888);
     return {
       selfForm: {
         userName,
@@ -182,7 +178,7 @@ export default {
           } = this.selfForm;
 
           const tags = this.selfForm.tags.tags || {};
-
+          const { userId } = store.get("userInfo");
           const body = {
             userName,
             nickName,
@@ -196,7 +192,7 @@ export default {
           this.changeUserInfo(body);
 
           // 修改个人信息
-          axios.post("/api/editorUserInfo", body).then(result => {
+          axios.post(`/api/editorUserInfo?userId=${userId}`, body).then(result => {
             // 跳转
 
             const { imgPath } = store.get("userInfo");
