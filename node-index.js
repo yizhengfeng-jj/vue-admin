@@ -1,3 +1,4 @@
+const chartData = require("./util/getObjectData");
 const http = require("http");
 const { routers } = require("./routers");
 const {
@@ -14,7 +15,8 @@ const {
   getLoginCount,
   getWordCloud,
   getActiveAuthor,
-  getMaxBlog
+  getMaxBlog,
+  getOneDayForScatter
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -172,6 +174,23 @@ routers.get("/api/getMaxBlog", (req, res) => {
       return res.end(JSON.stringify(new ErrorModal("", error)));
     }
   );
+});
+
+// 获取一周内00：00-24:00 内的发布文章散点图
+routers.get("/api/oneDayPublish", (req, res) => {
+  getOneDayForScatter(req, res).then(result => {
+    // 在这里维护一张00：00-24：00的对象
+
+    // 对立resule，更改表格的数据
+    const data = Array.isArray(result) ? result : [];
+
+    data.forEach(item => {
+      const { timeHour, number } = item || {};
+      chartData.timeRange[timeHour] = number;
+    });
+
+    return res.end(JSON.stringify(new SuccessModal(chartData.timeRange)))
+  });
 });
 
 // 测试代码

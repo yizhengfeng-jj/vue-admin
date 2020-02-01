@@ -141,7 +141,7 @@ login = (req, res) => {
 
         //res.setHeader('Set-Cookie', `userName=${username}; path=/;`);
         const { userId } = result[0];
-
+        console.log(userId, 'userId.....');
         // 生成token
         const token = jwt.sign(
           { userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 },
@@ -150,15 +150,31 @@ login = (req, res) => {
 
         resolve({ userId, token });
 
-        const insertSql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
-        exec(insertSql).then(
-          res => {
-            // resolve({ userId, token });
-          },
-          error => {
-            console.log(error, 22);
+        // 在这里做一层判断，如果有登陆信息，就更改登录次数，如果没有就插入
+        const ifHasLoinSql = `Select * from loginCount where userId='${userId}'`;
+
+        exec(ifHasLoinSql).then((result) => {
+          const unLoging = Array.isArray(result) ? !result.length : true;
+          let sql;
+
+          // 如果没有插入
+          if(unLoging) {
+            sql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
+          }else {
+            sql = `update loginCount set loginCount=loginCount + 1`
           }
-        );
+
+          exec(sql).then(
+            res => {
+              // resolve({ userId, token });
+            },
+            error => {
+              console.log(error, 22);
+            }
+          );
+        })
+        // const insertSql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
+        
       },
       error => {
         console.log(error, 5555);
@@ -236,13 +252,14 @@ const editorUserInfo = (req, res) => {
 
 // 上传上传信息
 const upload = (req, res) => {
+  console.log(66666);
   return new Promise((resolve, reject) => {
-    const { userId } = req.headers;
+    console.log(777)
+    const userId = req.headers.userid;
     const form = new formidable.IncomingForm();
-
+    console.log(888, userId, req.headers);
     form.uploadDir = "public";
     form.keeyExtendsions = true;
-
     form.parse(req, (error, fields, files) => {
       const { path, name } = files.file;
       const exot = name.split(".")[1];
@@ -345,6 +362,18 @@ const getMaxBlog = (req, res) => {
 //   })
 // }
 
+// 获取一周内00：00-24:00 内的发布文章散点图
+const getOneDayForScatter = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql =  `SELECT T.timeHour, COUNT(T.timeHour) as number from (SELECT CONCAT(HOUR(FROM_UNIXTIME(createTime / 1000)), ':00') as timeHour from blog) as T GROUP BY T.timeHour`;
+
+    exec(sql).then(result => {
+      const data = Array.isArray(result) ? result : [];
+
+      resolve(data);
+    })
+  })
+}
 module.exports = {
   getList,
   getSimpleBlog,
@@ -359,5 +388,6 @@ module.exports = {
   getLoginCount,
   getWordCloud,
   getActiveAuthor,
-  getMaxBlog
+  getMaxBlog,
+  getOneDayForScatter
 };

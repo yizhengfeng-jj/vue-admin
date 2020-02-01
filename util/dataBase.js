@@ -16,6 +16,7 @@ const exec = sql => {
     return new Promise((resolve, reject) => {
         con.query(sql, (error, result) => {
             if (error) {
+                console.log(error, 2222);
                 reject(error);
             }
 

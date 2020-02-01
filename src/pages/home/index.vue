@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <div>
+    <div class='vue-aside'>
       <el-header class="aside-header">
         <img :src="userInfo.imgPath" />
         <span>{{userInfo.userName}}</span>
@@ -199,6 +199,9 @@ p {
   margin: 0;
 }
 /* 更改全局样式结束*/
+.vue-aside{
+  background-color: #001529;
+}
 .aside-header {
   line-height: 60px;
   background-color: #001529;

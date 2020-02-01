@@ -158,4 +158,58 @@ const maxBlogOptions = {
 
 }
 
-export { lineOptions, wordCloudOptions, activeAuthorOptions, maxBlogOptions };
+
+// 散点图
+const scatterOptions = {
+  chart: {
+    type: 'scatter'
+  },
+  title: {
+    text: '最近一周的热点图'
+  },
+  xAxis: {
+    title: {
+      enabled: true,
+      text: '时间'
+    },
+    startOnTick: true,
+    enOnTick: true,
+    showLastLabel: true,
+    categories: []
+  },
+  yAxis: {
+    title: {
+      enabled: true,
+      text: '发布文章次数'
+    }
+  },
+  plotOptions: {
+    scatter: {
+      marker: {
+        radius: 5,
+        states: {
+          hover: {
+            enabled: true,
+            lineColor: 'yellow'
+          }
+        }
+      }
+    }
+  },
+  series: [{
+    name: '文章发布散点图',
+    data: [
+      [
+        10000000000, 5
+      ],
+      [
+        20000000000, 6
+      ],
+      [
+        30000000000, 7
+      ]
+    ]
+  }]
+
+}  
+export { lineOptions, wordCloudOptions, activeAuthorOptions, maxBlogOptions, scatterOptions };
