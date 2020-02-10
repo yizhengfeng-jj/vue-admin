@@ -1,32 +1,4 @@
-const timeRange = {
-  "00:00": null,
-  "01:00": null,
-  "02:00": null,
-  "03:00": null,
-  "04:00": null,
-  "05:00": null,
-  "06:00": null,
-  "07:00": null,
-  "08:00": null,
-  "09:00": null,
-  "10:00": null,
-  "11:00": null,
-  "12:00": null,
-  "13:00": null,
-  "14:00": null,
-  "15:00": null,
-  "16:00": null,
-  "17:00": null,
-  "18:00": null,
-  "19:00": null,
-  "20:00": null,
-  "21:00": null,
-  "22:00": null,
-  "23:00": null,
-  "24:00": null
-};
-
-const countryInfo = [
+const cityInfo = [
   { name: "北京", value: "CN.110000", lon: 116.405285, lat: 39.904989 },
   { name: "天津", value: "CN.120000", lon: 117.190182, lat: 39.125596 },
   { name: "河北", value: "CN.130000", lon: 114.502461, lat: 38.045474 },
@@ -63,4 +35,5 @@ const countryInfo = [
   { name: "澳门", value: "CN.820000", lon: 113.54909, lat: 22.198951 },
   { name: "南海诸岛", value: "CN.000000" }
 ];
-module.exports = { timeRange, countryInfo };
+
+export default cityInfo;

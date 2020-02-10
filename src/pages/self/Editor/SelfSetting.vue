@@ -19,8 +19,15 @@
           <el-form-item prop="tags" label="个性标签">
             <input-label :form="selfForm" />
           </el-form-item>
-          <el-form-item prop="signature" label="个性签名">
-            <el-input placeholder="请输入个性签名" v-model="selfForm.signature" />
+          <el-form-item prop="address" label="作者地址">
+            <el-select v-model="selfForm.address" class="city-info">
+              <el-option
+                v-for="city in citys"
+                :value="city.value"
+                :label="city.name"
+                :key="city.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-form>
       </el-col>
@@ -51,11 +58,20 @@
 <script>
 import Vue from "vue";
 import { mapState, mapActions } from "vuex";
-import { Row, Col, Form, FormItem, Input, Upload } from "element-ui";
+import {
+  Row,
+  Col,
+  Form,
+  FormItem,
+  Input,
+  Upload,
+  Select,
+  Option
+} from "element-ui";
 import store from "store";
 import axios from "axios";
 import InputLabel from "@/components/InputLabel";
-
+import citys from "@/util/chartData.js";
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Form);
@@ -77,14 +93,9 @@ export default {
     ...mapState(["imgPath", "userInfo"])
   },
   data: function() {
-    const {
-      userName,
-      nickName,
-      email,
-      description,
-      tags,
-      signature
-    } = store.get("userInfo");
+    const { userName, nickName, email, description, tags, address = '' } = store.get(
+      "userInfo"
+    );
 
     return {
       selfForm: {
@@ -96,7 +107,7 @@ export default {
           content: "",
           tags
         },
-        signature
+        address
       },
       rules: {
         userName: [
@@ -124,7 +135,7 @@ export default {
             validator: this.testTags
           }
         ],
-        signature: [
+        address: [
           {
             required: true,
             message: "个性签名不能为空"
@@ -135,7 +146,8 @@ export default {
         Authorization: "",
         userId: "",
         charset: "gbk"
-      }
+      },
+      citys
     };
   },
   methods: {
@@ -174,7 +186,7 @@ export default {
             nickName,
             email,
             description,
-            signature
+            address
           } = this.selfForm;
 
           const tags = this.selfForm.tags.tags || {};
@@ -185,26 +197,28 @@ export default {
             email,
             description,
             tags,
-            signature
+            address
           };
 
           // 更改userInfo
           this.changeUserInfo(body);
 
           // 修改个人信息
-          axios.post(`/api/editorUserInfo?userId=${userId}`, body).then(result => {
-            // 跳转
+          axios
+            .post(`/api/editorUserInfo?userId=${userId}`, body)
+            .then(result => {
+              // 跳转
 
-            const { imgPath } = store.get("userInfo");
+              const { imgPath } = store.get("userInfo");
 
-            if (result.error === 0) {
-              const userInfo = { ...body, imgPath, tags };
+              if (result.error === 0) {
+                const userInfo = { ...body, imgPath, tags };
 
-              store.set("userInfo", userInfo);
-              this.changeUserInfo(userInfo);
-              this.$router.push("/home/selfDetail");
-            }
-          });
+                store.set("userInfo", userInfo);
+                this.changeUserInfo(userInfo);
+                this.$router.push("/home/selfDetail");
+              }
+            });
         }
       });
     }
@@ -218,6 +232,10 @@ export default {
   .setting_title {
     margin-bottom: 16px;
     font-size: 20px;
+  }
+
+  .city-info {
+    width: 100%;
   }
 
   .upload {

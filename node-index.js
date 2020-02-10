@@ -16,7 +16,8 @@ const {
   getWordCloud,
   getActiveAuthor,
   getMaxBlog,
-  getOneDayForScatter
+  getOneDayForScatter,
+  authorAddress
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -189,10 +190,21 @@ routers.get("/api/oneDayPublish", (req, res) => {
       chartData.timeRange[timeHour] = number;
     });
 
-    return res.end(JSON.stringify(new SuccessModal(chartData.timeRange)))
+    return res.end(JSON.stringify(new SuccessModal(chartData.timeRange)));
   });
 });
 
+// 获取作者(位置图数据
+routers.get("/api/authorAddress", (req, res) => {
+  authorAddress(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
+});
 // 测试代码
 let sleep = false;
 let count = 0;

@@ -8,7 +8,7 @@
               <img :src="userInfo.imgPath" />
             </p>
             <p>{{ userInfo.userName || "这个人很懒什么都没留下" }}</p>
-            <p>{{ userInfo.signature || "这个人很懒什么都没留下" }}</p>
+            <p>{{ userInfo.nickName || "这个人很懒什么都没留下" }}</p>
           </div>
           <div class="info-head_description">
             <p>
@@ -23,7 +23,7 @@
             </p>
             <p>
               <span class="el-icon-location-outline"></span>
-              <span>{{ userInfo.nickName || "这个人很懒什么都没留下" }}</span>
+              <span>{{ this.address || "这个人很懒什么都没留下" }}</span>
             </p>
           </div>
           <el-divider></el-divider>
@@ -63,6 +63,7 @@ import { mapState } from "vuex";
 import { Row, Col, Divider, Tag } from "element-ui";
 import axios from "axios";
 import BlogShow from "Components/BlogShow";
+import citys from "@/util/chartData.js";
 
 Vue.use(Row);
 Vue.use(Col);
@@ -75,7 +76,14 @@ export default {
     BlogShow
   },
   computed: {
-    ...mapState(["imgPath", "userInfo"])
+    ...mapState(["imgPath", "userInfo"]),
+    address: function() {
+      const city = citys.find(city => {
+        return city.value === this.userInfo.address;
+      });
+
+      return city && city.name;
+    }
   },
   data: () => ({
     blogs: new Array(8).fill({

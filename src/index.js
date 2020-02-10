@@ -9,3 +9,23 @@ const app = new Vue({
         App
     }
 });
+
+const app1 = new Vue({
+    el: 'add',
+    data: function() {
+        return {
+            name: 'json'
+        }
+    },
+    props: {
+        age: String
+    },
+    methods: {
+        getName: function() {}
+    },
+    watch: {
+        name: function() {}
+    }
+})
+
+console.log(app1);

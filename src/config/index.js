@@ -1,3 +1,5 @@
+import geoJson from "@/util/city.json";
+
 const lineOptions = {
   chart: {
     type: "spline",
@@ -72,8 +74,8 @@ const activeAuthorOptions = {
   tooltip: {
     headerFormat: "",
     pointFormatter: function() {
-        const { name, y } = this.options || {};
-        return name + ": " + y;
+      const { name, y } = this.options || {};
+      return name + ": " + y;
     }
   },
   xAxis: {
@@ -95,10 +97,9 @@ const activeAuthorOptions = {
   ]
 };
 
-
 const maxBlogOptions = {
   chart: {
-    type: 'solidgauge'
+    type: "solidgauge"
   },
   title: {
     text: null
@@ -109,12 +110,12 @@ const maxBlogOptions = {
   pane: {
     startAngle: -90,
     endAngle: 90,
-    size: '150%',
-    center: ['50%', '85%'],
+    size: "150%",
+    center: ["50%", "85%"],
     background: {
-      innerRadius: '60%',
-			outerRadius: '100%',
-      shape: 'arc'
+      innerRadius: "60%",
+      outerRadius: "100%",
+      shape: "arc"
     }
   },
   plotOptions: {
@@ -128,10 +129,10 @@ const maxBlogOptions = {
   },
   yAxis: {
     stops: [
-			[0.1, '#55BF3B'], // green
-			[0.5, '#DDDF0D'], // yellow
-			[0.9, '#DF5353'] // red
-		],
+      [0.1, "#55BF3B"], // green
+      [0.5, "#DDDF0D"], // yellow
+      [0.9, "#DF5353"] // red
+    ],
     min: 0,
     max: 10,
     tickWidth: 0,
@@ -139,38 +140,38 @@ const maxBlogOptions = {
     minorTickInterval: null,
     tickPixelInterval: 400,
     title: {
-      text: '博客量',
+      text: "博客量",
       y: -70
     },
     labels: {
       y: 20
     }
   },
-  series: [{
-    data: [],
-    dataLabels: {
-      formatter: function () {
-        //console.log(this, 333300000);
-        return ``
+  series: [
+    {
+      data: [],
+      dataLabels: {
+        formatter: function() {
+          //console.log(this, 333300000);
+          return ``;
+        }
       }
     }
-  }]
-
-}
-
+  ]
+};
 
 // 散点图
 const scatterOptions = {
   chart: {
-    type: 'scatter'
+    type: "scatter"
   },
   title: {
-    text: '最近一周的热点图'
+    text: "最近一周的热点图"
   },
   xAxis: {
     title: {
       enabled: true,
-      text: '时间'
+      text: "时间"
     },
     startOnTick: true,
     enOnTick: true,
@@ -180,7 +181,7 @@ const scatterOptions = {
   yAxis: {
     title: {
       enabled: true,
-      text: '发布文章次数'
+      text: "发布文章次数"
     }
   },
   plotOptions: {
@@ -190,26 +191,54 @@ const scatterOptions = {
         states: {
           hover: {
             enabled: true,
-            lineColor: 'yellow'
+            lineColor: "yellow"
           }
         }
       }
     }
   },
-  series: [{
-    name: '文章发布散点图',
-    data: [
-      [
-        10000000000, 5
-      ],
-      [
-        20000000000, 6
-      ],
-      [
-        30000000000, 7
-      ]
-    ]
-  }]
+  series: [
+    {
+      name: "文章发布散点图",
+      data: []
+    }
+  ]
+};
 
-}  
-export { lineOptions, wordCloudOptions, activeAuthorOptions, maxBlogOptions, scatterOptions };
+const chinaMapConfig = {
+  chart: {
+    map: geoJson
+  },
+  title: {
+    text: "文章作者位置图"
+  },
+  legend: { enabled: false },
+  xAxis: {},
+  series: [
+    {
+      type: "map",
+      color: "#79bdfe",
+      nullColor: "#d9ebfe",
+      borderWidth: 2,
+      borderColor: "#fff",
+      tooltip: {
+        headerFormat: null,
+        pointFormat:
+          "{point.name}: <b>{point.username}</b><br/>",
+        footerFormat: null
+      },
+      allowPointSelect: true,
+      data: [],
+      joinBy: "name"
+    }
+  ]
+};
+
+export {
+  lineOptions,
+  wordCloudOptions,
+  activeAuthorOptions,
+  maxBlogOptions,
+  scatterOptions,
+  chinaMapConfig
+};

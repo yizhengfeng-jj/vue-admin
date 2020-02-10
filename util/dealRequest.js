@@ -141,7 +141,7 @@ login = (req, res) => {
 
         //res.setHeader('Set-Cookie', `userName=${username}; path=/;`);
         const { userId } = result[0];
-        console.log(userId, 'userId.....');
+        console.log(userId, "userId.....");
         // 生成token
         const token = jwt.sign(
           { userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 },
@@ -153,15 +153,15 @@ login = (req, res) => {
         // 在这里做一层判断，如果有登陆信息，就更改登录次数，如果没有就插入
         const ifHasLoinSql = `Select * from loginCount where userId='${userId}'`;
 
-        exec(ifHasLoinSql).then((result) => {
+        exec(ifHasLoinSql).then(result => {
           const unLoging = Array.isArray(result) ? !result.length : true;
           let sql;
 
           // 如果没有插入
-          if(unLoging) {
+          if (unLoging) {
             sql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
-          }else {
-            sql = `update loginCount set loginCount=loginCount + 1`
+          } else {
+            sql = `update loginCount set loginCount=loginCount + 1`;
           }
 
           exec(sql).then(
@@ -172,9 +172,8 @@ login = (req, res) => {
               console.log(error, 22);
             }
           );
-        })
+        });
         // const insertSql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
-        
       },
       error => {
         console.log(error, 5555);
@@ -211,7 +210,7 @@ const getUserInfo = (req, res) => {
   return new Promise((resolve, reject) => {
     const { body, ifLogin } = req || {};
     const { userId } = body;
-    const sql = `select description, email, imgPath, nickName, signature, tags, userName from users where userId='${userId}'`;
+    const sql = `select description, email, imgPath, nickName, address, tags, userName from users where userId='${userId}'`;
 
     if (ifLogin) {
       exec(sql).then(result => {
@@ -235,8 +234,8 @@ const editorUserInfo = (req, res) => {
   return new Promise((resolve, reject) => {
     const { body } = req || {};
     const { userid } = req.headers;
-    const { userName, nickName, email, description, tags, signature } = body;
-    const sql = `update users set username='${userName}', nickname='${nickName}', email='${email}', description='${description}', tags='${tags}', signature='${signature}' where userId='${userid}'`;
+    const { userName, nickName, email, description, tags, address } = body;
+    const sql = `update users set username='${userName}', nickname='${nickName}', email='${email}', description='${description}', tags='${tags}', address='${address}' where userId='${userid}'`;
 
     exec(sql).then(result => {
       const { affectedRows } = result || {};
@@ -252,12 +251,10 @@ const editorUserInfo = (req, res) => {
 
 // 上传上传信息
 const upload = (req, res) => {
-  console.log(66666);
   return new Promise((resolve, reject) => {
-    console.log(777)
     const userId = req.headers.userid;
     const form = new formidable.IncomingForm();
-    console.log(888, userId, req.headers);
+
     form.uploadDir = "public";
     form.keeyExtendsions = true;
     form.parse(req, (error, fields, files) => {
@@ -343,7 +340,6 @@ const getActiveAuthor = (req, res) => {
 const getMaxBlog = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `select author,count(author) as num from blog group by author order by num desc limit 1`;
-    
 
     exec(sql).then(result => {
       const data = Array.isArray(result) ? result[0] : result;
@@ -365,15 +361,27 @@ const getMaxBlog = (req, res) => {
 // 获取一周内00：00-24:00 内的发布文章散点图
 const getOneDayForScatter = (req, res) => {
   return new Promise((resolve, reject) => {
-    const sql =  `SELECT T.timeHour, COUNT(T.timeHour) as number from (SELECT CONCAT(HOUR(FROM_UNIXTIME(createTime / 1000)), ':00') as timeHour from blog) as T GROUP BY T.timeHour`;
+    const sql = `SELECT T.timeHour, COUNT(T.timeHour) as number from (SELECT CONCAT(HOUR(FROM_UNIXTIME(createTime / 1000)), ':00') as timeHour from blog) as T GROUP BY T.timeHour`;
 
     exec(sql).then(result => {
       const data = Array.isArray(result) ? result : [];
 
       resolve(data);
+    });
+  });
+};
+
+// 文章发布作者位置图
+const authorAddress = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT address, username, userId FROM users`;
+
+    exec(sql).then(res => {
+      resolve(res)
     })
   })
 }
+
 module.exports = {
   getList,
   getSimpleBlog,
@@ -389,5 +397,6 @@ module.exports = {
   getWordCloud,
   getActiveAuthor,
   getMaxBlog,
-  getOneDayForScatter
+  getOneDayForScatter,
+  authorAddress
 };
