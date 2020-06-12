@@ -29,8 +29,10 @@
 <script>
 import vue from "vue";
 import { Table, TableColumn, Tag, MessageBox, Message } from "element-ui";
+import store from 'store';
 import axios from "axios";
 import moment from "moment";
+import setLogs from '../../../util/setLogs';
 
 vue.use(Table);
 vue.use(TableColumn);
@@ -47,7 +49,6 @@ export default {
   methods: {
     getList: function() {
       axios.get("/api/getList").then(res => {
-        console.log(res, 777);
         const data = Array.isArray(res && res.data) ? res && res.data : [];
 
         const tableData = data.map((item, index) => {
@@ -79,7 +80,6 @@ export default {
       });
     },
     filterAuthor: function(value, row, column) {
-      console.log(value, row, column, 5555);
 
       const { property } = column;
 
@@ -96,14 +96,32 @@ export default {
       })
         .then(res => {
           axios.get(`api/deleteSimple?id=${id}`).then(res => {
+            const userInfo = store.get('userInfo');
+
             if (res.error === 0) {
               Message.info("删除成功");
               this.getList();
+
+               // 发送日志
+              setLogs({
+                level: 2,
+                user: userInfo.userName,
+                action: '删除',
+                description: '删除博客成功'
+              })
             }
           });
         })
         .catch(res => {
           Message.info("已经取消");
+
+           // 发送日志
+            setLogs({
+              level: 2,
+              user: userInfo.userName,
+              action: '删除',
+              description: '删除博客失败'
+            })
         });
     }
   },

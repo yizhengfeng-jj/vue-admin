@@ -61,8 +61,10 @@
             <span slot="title">列表页</span>
           </el-menu-item>
           <el-menu-item index="5">
-            <i class="el-icon-document"></i>
-            <span slot="title">日志操作</span>
+           <router-link to="/home/log" slot="title">
+              <i class="el-icon-document"></i>
+              <span>日志操作</span>
+           </router-link>
           </el-menu-item>
         </el-menu>
       </el-aside>

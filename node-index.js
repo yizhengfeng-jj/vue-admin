@@ -17,7 +17,9 @@ const {
   getActiveAuthor,
   getMaxBlog,
   getOneDayForScatter,
-  authorAddress
+  authorAddress,
+  getLogs,
+  setLogs
 } = require("./util/dealRequest");
 const { SuccessModal, ErrorModal } = require("./src/modal");
 
@@ -205,27 +207,27 @@ routers.get("/api/authorAddress", (req, res) => {
     }
   );
 });
-// 测试代码
-let sleep = false;
-let count = 0;
-routers.get("/api/test", (req, res) => {
-  count === 0 &&
-    setTimeout(() => {
-      sleep = true;
-    }, 35000);
 
-  count++;
-
-  if (!sleep) {
-    res.end(JSON.stringify({ status: 0 }));
-  } else {
-    sleep = false;
-    count = 0;
-
-    res.end(JSON.stringify({ status: 1 }));
-  }
+// 获取日志操作
+routers.get("/api/log", (req, res) => {
+  getLogs(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
 });
 
-routers.post("/api/submit", (req, res) => {
-  res.end(JSON.stringify({ status: 3, id: "fe5asdasd-adsasd45asd5-asd12" }));
+//设置日志操作
+routers.post("/api/setLog", (req, res) => {
+  setLogs(req, res).then(
+    result => {
+      return res.end(JSON.stringify(new SuccessModal(result)));
+    },
+    error => {
+      return res.end(JSON.stringify(new ErrorModal("", error)));
+    }
+  );
 });

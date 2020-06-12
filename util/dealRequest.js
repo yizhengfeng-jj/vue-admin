@@ -101,7 +101,6 @@ const updateSimpleBlog = (req, res) => {
         }
       },
       error => {
-        console.log(error);
       }
     );
   });
@@ -198,7 +197,6 @@ register = (req, res) => {
         resolve("ok");
       },
       error => {
-        console.log(error);
         reject("创造失败");
       }
     );
@@ -279,9 +277,10 @@ const getLoginCount = (req, res) => {
 
     exec(sql).then(
       res => {
-        if (res.length) {
-          resolve(res);
-        }
+        // if (res.length) {
+        //   resolve(res);
+        // }
+        resolve(res);
       },
       error => {
         console.log(error);
@@ -377,10 +376,37 @@ const authorAddress = (req, res) => {
     const sql = `SELECT address, username, userId FROM users`;
 
     exec(sql).then(res => {
-      resolve(res)
-    })
-  })
-}
+      resolve(res);
+    });
+  });
+};
+
+// 获取日志操作接口
+const getLogs = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT level, time, user, action, description FROM log`;
+
+    exec(sql).then(res => {
+      resolve(res);
+    });
+  });
+};
+
+// 设置日志操作
+const setLogs = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const { body } = req; // 数据统一通过body获取
+
+    // 获取关键字段
+    const { level, time, user, action, description } = body;
+
+    const sql = `INSERT INTO log(level, time, user, action, description) values(${level}, '${time}', '${user}', '${action}', '${description}')`;
+
+    exec(sql).then(res => {
+      resolve(true);
+    });
+  });
+};
 
 module.exports = {
   getList,
@@ -398,5 +424,7 @@ module.exports = {
   getActiveAuthor,
   getMaxBlog,
   getOneDayForScatter,
-  authorAddress
+  authorAddress,
+  getLogs,
+  setLogs
 };

@@ -72,6 +72,8 @@ import store from "store";
 import axios from "axios";
 import InputLabel from "@/components/InputLabel";
 import citys from "@/util/chartData.js";
+import setLogs from '../../../util/setLogs';
+
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Form);
@@ -174,9 +176,25 @@ export default {
 
       userInfo.imgPath = data;
       this.changeUserInfo(userInfo);
+
+      // 发送日志
+      setLogs({
+        level: 1,
+        user: userInfo.userName,
+        action: '修改',
+        description: '修改个人头像成功'
+      })
+      
     },
     dealError: () => {
-      console.log("dealError");
+
+       // 发送日志
+      setLogs({
+        level: 2,
+        user: userInfo.userName,
+        action: '修改',
+        description: '修改个人头像失败'
+      })
     },
     submit: function() {
       this.$refs["selfForm"].validate(valid => {
@@ -217,6 +235,14 @@ export default {
                 store.set("userInfo", userInfo);
                 this.changeUserInfo(userInfo);
                 this.$router.push("/home/selfDetail");
+
+                // 发送日志
+                setLogs({
+                  level: 1,
+                  user: userName,
+                  action: '修改',
+                  description: '修改个人信息'
+                })
               }
             });
         }

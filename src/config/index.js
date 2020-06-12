@@ -38,7 +38,6 @@ const lineOptions = {
   tooltip: {
     headerFormat: "",
     pointFormatter: function() {
-      console.log(this, 22200);
       const { name, y } = this.options || {};
       return name + ": " + y;
     }
@@ -152,7 +151,6 @@ const maxBlogOptions = {
       data: [],
       dataLabels: {
         formatter: function() {
-          //console.log(this, 333300000);
           return ``;
         }
       }

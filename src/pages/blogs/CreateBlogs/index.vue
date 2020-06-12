@@ -2,7 +2,9 @@
   <div>
     <div class="blog-header">
       <div class="title">你好json</div>
-      <div>表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。</div>
+      <div>
+        表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。
+      </div>
     </div>
 
     <el-form :model="blogForm" :rules="rules" ref="blogForm">
@@ -31,7 +33,9 @@
 import vue from "vue";
 import { Form, FormItem, Input, Button } from "element-ui";
 import axios from "axios";
+import store from "store";
 import InputLabel from "@/components/InputLabel";
+import setLogs from "../../../util/setLogs";
 
 vue.use(Form);
 vue.use(FormItem);
@@ -60,8 +64,6 @@ export default {
             tags
           }
         };
-
-        console.log(this.blogForm);
       });
     }
   },
@@ -89,6 +91,7 @@ export default {
           const tags = this.blogForm.tags.tags;
           const { type } = this.$route.params;
           const { id } = this.$route.query;
+          const userInfo = store.get("userInfo");
 
           const url =
             type === "editor"
@@ -106,6 +109,14 @@ export default {
             .then(result => {
               // 跳转博客展示页面
               this.$router.push("/home/blogs/show");
+
+              // 发送日志
+              setLogs({
+                level: 1,
+                user: userInfo.userName,
+                action: "发布",
+                description: "发布博客成功"
+              });
             });
         }
       });
@@ -161,7 +172,7 @@ export default {
   }
 };
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
 .blog-header {
   background-color: #fff;
   padding: 20px 0 30px 20px;

@@ -47,6 +47,7 @@ import { mapActions } from "vuex";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
 import axios from "axios";
 import store from "store";
+import setLogs from '../util/setLogs';
 
 Vue.use(Form);
 Vue.use(Input);
@@ -103,6 +104,15 @@ export default {
                 Message.success({
                   message: "登录成功"
                 });
+
+               
+                // 发送日志
+                setLogs({
+                  level: 1,
+                  user: username,
+                  action: '登录',
+                  description: '登录 vue-admin界面'
+                })
 
                 this.changeUserInfo(data);
 

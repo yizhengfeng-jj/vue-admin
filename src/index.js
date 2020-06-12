@@ -27,5 +27,3 @@ const app1 = new Vue({
         name: function() {}
     }
 })
-
-console.log(app1);

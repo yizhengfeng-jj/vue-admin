@@ -124,7 +124,6 @@ export default {
       const { data = [] } = res || {};
 
       this.scatterOptions.xAxis.categories = Object.keys(data);
-      console.log(Object.keys(data));
       this.scatterOptions.series[0].data = Object.values(data);
     });
 
