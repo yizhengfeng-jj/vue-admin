@@ -1,9 +1,9 @@
 <template>
   <el-container>
-    <div class='vue-aside'>
+    <div class="vue-aside">
       <el-header class="aside-header">
         <img :src="userInfo.imgPath" />
-        <span>{{userInfo.userName}}</span>
+        <span>{{ userInfo.userName }}</span>
       </el-header>
       <el-aside class="aside">
         <el-menu
@@ -61,10 +61,10 @@
             <span slot="title">列表页</span>
           </el-menu-item>
           <el-menu-item index="5">
-           <router-link to="/home/log" slot="title">
+            <router-link to="/home/log" slot="title">
               <i class="el-icon-document"></i>
-              <span>日志操作</span>
-           </router-link>
+              <span>日志操作11</span>
+            </router-link>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -74,12 +74,23 @@
         <i class="el-icon-s-fold collaspe"></i>
         <div class="header_operator">
           <i class="el-icon-search"></i>
-          <i class="el-icon-question"></i>
+          <el-tooltip content="源码地址" placement="bottom"
+            ><a
+              href="https://github.com/yizhengfeng-jj/vue-admin"
+              target="_blank"
+              class="target"
+              ><i class="el-icon-question"></i></a
+          ></el-tooltip>
           <i class="el-icon-message"></i>
-          <div class="header_operator_info">
-            <img :src="userInfo.imgPath" />
-            <span>{{userInfo.username}}</span>
-          </div>
+          <el-dropdown trigger="click" @command="clickMenu">
+            <div class="header_operator_info">
+              <img :src="userInfo.imgPath" />
+              <span>{{ userInfo.userName }}</span>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <el-select v-model="lang" class="header_operator_lang">
             <el-option
               v-for="item in langOptions"
@@ -109,7 +120,11 @@ import {
   Submenu,
   MenuItem,
   Select,
-  Option
+  Option,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Tooltip
 } from "element-ui";
 import axios from "../../service/http";
 
@@ -122,6 +137,10 @@ Vue.use(Submenu);
 Vue.use(MenuItem);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(Tooltip);
 
 export default {
   name: "Home",
@@ -132,6 +151,7 @@ export default {
     ...mapActions(["changeImgPath", "changeUserInfo"])
   },
   mounted: function() {
+    console.log(1123699);
     // 设置数据
     //const userInfo = store.get("userInfo") || {};
     //this.changeUserInfo(userInfo);
@@ -165,10 +185,15 @@ export default {
       ],
       lang: "chinaese"
     };
+  },
+  methods: {
+    clickMenu: function() {
+      location.href = "http://localhost:9000";
+    }
   }
 };
 </script>
-<style  lang="less">
+<style lang="less">
 /* 更改element-ui样式 */
 .menu-demo {
   /deep/ .is-active {
@@ -180,11 +205,10 @@ export default {
     padding: 0 !important;
   }
 
-  > li > a{
-     padding: 0 20px 0 0;
+  > li > a {
+    padding: 0 20px 0 0;
   }
 }
-
 
 /* 更改全局样式 */
 a {
@@ -201,7 +225,7 @@ p {
   margin: 0;
 }
 /* 更改全局样式结束*/
-.vue-aside{
+.vue-aside {
   background-color: #001529;
 }
 .aside-header {
@@ -217,6 +241,14 @@ p {
     vertical-align: middle;
     margin-right: 8px;
   }
+}
+
+.target a {
+  text-decoration: none;
+  outline: none;
+  color: black;
+  box-sizing: border-box;
+  display: inline-block;
 }
 
 .main {

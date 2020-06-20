@@ -1,33 +1,17 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 开启css提取
-const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin"); // 提取的css代码压缩
-const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // 清除dist目录  clean-webpack-plugin最新更改必须是解构f
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const optimizeCssAssetsWebpakPlugin = require("optimize-css-assets-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const path = require("path");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index.js",
   output: {
-    path: path.resove(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist"),
     filename: "bundle.js"
-  },
-  devServer: {
-    port: 9000,
-    hotOnly: true, // 因为是vue项目，有了vue-loader之后，只需要设置hotOnly就能热
-    proxy: {
-      "/api2": {
-        target: "https://data.jianshukeji.com",
-        pathRewrite: {
-          "^/api2": ""
-        },
-        changeOrigin: true
-      },
-      "/api": {
-        target: "http://localhost:8000"
-      }
-    }
   },
   devtool: "source-map",
   resolve: {
@@ -93,18 +77,17 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "vue.css"
     }),
-    new OptimizeCssAssetsWebpackPlugin({
+    new optimizeCssAssetsWebpakPlugin({
       assetNameRegExp: /\.css$/g,
       cssProcessor: require("cssnano")
     }),
-
     new HtmlWebpackPlugin({
       template: "index.html",
       minify: {
-        removeComments: true,
+        collapseWhitespace: true,
         minifyCSS: true,
         minifyJS: true,
-        collapseWhitespace: true
+        removeComments: true
       }
     }),
     new CleanWebpackPlugin(),
