@@ -126,7 +126,7 @@ import {
   DropdownItem,
   Tooltip
 } from "element-ui";
-import axios from "../../service/http";
+// import axios from "../../service/http";
 
 Vue.use(Container);
 Vue.use(Header);
@@ -151,7 +151,6 @@ export default {
     ...mapActions(["changeImgPath", "changeUserInfo"])
   },
   mounted: function() {
-    console.log(1123699);
     // 设置数据
     //const userInfo = store.get("userInfo") || {};
     //this.changeUserInfo(userInfo);
@@ -243,12 +242,13 @@ p {
   }
 }
 
-.target a {
+.target {
   text-decoration: none;
   outline: none;
   color: black;
   box-sizing: border-box;
   display: inline-block;
+  width: auto;
 }
 
 .main {

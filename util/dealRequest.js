@@ -100,8 +100,7 @@ const updateSimpleBlog = (req, res) => {
           resolve("ok");
         }
       },
-      error => {
-      }
+      error => {}
     );
   });
 };
@@ -140,7 +139,7 @@ login = (req, res) => {
 
         //res.setHeader('Set-Cookie', `userName=${username}; path=/;`);
         const { userId } = result[0];
-        console.log(userId, "userId.....");
+
         // 生成token
         const token = jwt.sign(
           { userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 },

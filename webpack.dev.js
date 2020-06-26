@@ -10,8 +10,11 @@ module.exports = {
   mode: "development",
   entry: "./src/index.js",
   output: {
-    path: path.resove(__dirname, "dist"),
-    filename: "bundle.js"
+    path: path.resolve(__dirname, "dist"),
+
+    // 解决报错
+    // Cannot use [chunkhash] or [contenthash] for chunk in '[name].[chunkhash].js' (use [hash] instead)
+    filename: `bundle-[hash].js`
   },
   devServer: {
     port: 9000,
@@ -108,10 +111,35 @@ module.exports = {
       }
     }),
     new CleanWebpackPlugin(),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+
+    // scope hoisting减少webpack打包后的包裹
+    new webpack.optimize.ModuleConcatenationPlugin()
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
     // })
-  ]
+  ],
+
+  // 提取公共函数和分离模块,为了让第三方的模块走缓存
+  // 这里有一个问题如果走cdn打包会更快一点
+  optimization: {
+    splitChunks: {
+      minSize: 0,
+      cacheGroups: {
+        vander: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vue-vander",
+          chunks: "all",
+          priority: -10
+        },
+        common: {
+          name: "common",
+          chunks: "all",
+          minChunks: 2,
+          priority: -20
+        }
+      }
+    }
+  }
 };

@@ -11,7 +11,10 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js"
+
+    // 解决报错
+    // Cannot use [chunkhash] or [contenthash] for chunk in '[name].[chunkhash].js' (use [hash] instead)
+    filename: 'bundle-[contenthash].js'
   },
   devtool: "source-map",
   resolve: {
@@ -96,5 +99,20 @@ module.exports = {
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
     // })
-  ]
+  ],
+
+  // 提取公共函数和分离模块,为了让第三方的模块走缓存
+  // 这里有一个问题如果走cdn打包会更快一点
+  optimization: {
+    splitChunks: {
+      minSize: 0,
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vue-vander",
+          chunks: "all"
+        }
+      }
+    }
+  }
 };

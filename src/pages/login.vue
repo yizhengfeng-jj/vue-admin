@@ -1,6 +1,12 @@
 <template>
   <div class="bg">
-    <el-form label-width="80px" class="login" :rules="rules" :model="loginForm" ref="loginForm">
+    <el-form
+      label-width="80px"
+      class="login"
+      :rules="rules"
+      :model="loginForm"
+      ref="loginForm"
+    >
       <el-form-item label="用户名" prop="username">
         <el-input placeholder="请输入用户名" v-model="loginForm.username" />
       </el-form-item>
@@ -45,15 +51,16 @@
 import Vue from "vue";
 import { mapActions } from "vuex";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
-import axios from "axios";
+// import axios from "axios";
+import axios from "../service/http";
 import store from "store";
-import setLogs from '../util/setLogs';
+import setLogs from "../util/setLogs";
 
 Vue.use(Form);
 Vue.use(Input);
 Vue.use(FormItem);
 Vue.use(Button);
-// Vue.use(Message);
+// Vue.use(Message, 123456);
 
 export default {
   name: "Login",
@@ -88,7 +95,8 @@ export default {
       this.$refs["loginForm"].validate(valid => {
         if (valid) {
           axios.post("/api/login", { username, password }).then(res => {
-            const { error, data } = res;
+            const { data, error } = res;
+
             const { token, userId } = data || {};
 
             store.set("httpInfo", { userId, token });
@@ -105,14 +113,13 @@ export default {
                   message: "登录成功"
                 });
 
-               
                 // 发送日志
                 setLogs({
                   level: 1,
                   user: username,
-                  action: '登录',
-                  description: '登录 vue-admin界面'
-                })
+                  action: "登录",
+                  description: "登录 vue-admin界面"
+                });
 
                 this.changeUserInfo(data);
 
