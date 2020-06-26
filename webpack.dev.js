@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 开启css提取
 const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin"); // 提取的css代码压缩
+const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // 清除dist目录  clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const path = require("path");
@@ -17,6 +18,7 @@ module.exports = {
     filename: `bundle-[hash].js`
   },
   devServer: {
+    stats: "errors-only", // 打包时候的日志优化,配合下面的插件使用
     port: 9000,
     hotOnly: true, // 因为是vue项目，有了vue-loader之后，只需要设置hotOnly就能热
     proxy: {
@@ -114,7 +116,8 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // scope hoisting减少webpack打包后的包裹
-    new webpack.optimize.ModuleConcatenationPlugin()
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new FriendlyErrorsWebpackPlugin() // webpack打包日志优化
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')

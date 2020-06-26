@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const optimizeCssAssetsWebpakPlugin = require("optimize-css-assets-webpack-plugin");
+const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const path = require("path");
@@ -14,7 +15,7 @@ module.exports = {
 
     // 解决报错
     // Cannot use [chunkhash] or [contenthash] for chunk in '[name].[chunkhash].js' (use [hash] instead)
-    filename: 'bundle-[contenthash].js'
+    filename: "bundle-[contenthash].js"
   },
   devtool: "source-map",
   resolve: {
@@ -77,6 +78,7 @@ module.exports = {
   },
 
   plugins: [
+    new FriendlyErrorsWebpackPlugin(), // webpakck打包日志优化
     new MiniCssExtractPlugin({
       filename: "vue.css"
     }),
@@ -114,5 +116,6 @@ module.exports = {
         }
       }
     }
-  }
+  },
+  stats: "errors-only" // 打包时候的日志优化,配合下面的插件使用
 };
