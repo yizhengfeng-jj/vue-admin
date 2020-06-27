@@ -5,9 +5,11 @@ const optimizeCssAssetsWebpakPlugin = require("optimize-css-assets-webpack-plugi
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const path = require("path");
 
-module.exports = {
+const speed = new SpeedMeasurePlugin();
+module.exports = speed.wrap({
   mode: "production",
   entry: "./src/index.js",
   output: {
@@ -118,4 +120,4 @@ module.exports = {
     }
   },
   stats: "errors-only" // 打包时候的日志优化,配合下面的插件使用
-};
+});

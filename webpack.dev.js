@@ -5,9 +5,12 @@ const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plug
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // 清除dist目录  clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const path = require("path");
 
-module.exports = {
+const speed = new SpeedMeasurePlugin();
+
+module.exports = speed.wrap({
   mode: "development",
   entry: "./src/index.js",
   output: {
@@ -65,7 +68,8 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        use: "babel-loader"
+        use: "babel-loader",
+        exclude: /node_modules/
       },
       {
         test: /\.vue$/,
@@ -145,4 +149,4 @@ module.exports = {
       }
     }
   }
-};
+});
