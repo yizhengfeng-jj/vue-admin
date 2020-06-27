@@ -1,0 +1,16 @@
+language: node_js
+
+sudu: false
+
+cache:
+  apt: true
+  directories:
+    - node_modules
+
+node_js: stable
+
+install:
+  - npm i
+  
+scripts:
+  npm run build
