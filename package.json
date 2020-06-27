@@ -61,7 +61,7 @@
     "test": "webpack-dev-server --config webpack.test.js",
     "build": "webpack --config webpack.prod.js",
     "nodeStart": "nodemon node-index.js",
-    "changelog": "conventional-changelog-cli -p angular -i CHANGRLOG.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i CHANGRLOG.md -s -r 0"
   },
   "husky": {
     "hooks": {
