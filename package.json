@@ -61,8 +61,12 @@
     "test": "webpack-dev-server --config webpack.test.js",
     "build": "webpack --config webpack.prod.js",
     "nodeStart": "nodemon node-index.js",
-    "commitmsg": "validate-commit-msg",
     "changelog": "conventional-changelog-cli -p angular -i CHANGRLOG.md -s -r 0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "validate-commit-msg"
+    }
   },
   "browserslist": [
     "> 1%",
