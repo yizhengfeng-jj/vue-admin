@@ -6,6 +6,7 @@ const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // 清除dist目录  clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const path = require("path");
 
 const speed = new SpeedMeasurePlugin();
@@ -121,7 +122,8 @@ module.exports = speed.wrap({
 
     // scope hoisting减少webpack打包后的包裹
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new FriendlyErrorsWebpackPlugin() // webpack打包日志优化
+    new FriendlyErrorsWebpackPlugin(), // webpack打包日志优化
+    new BundleAnalyzerPlugin() // 打包体积插件
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
