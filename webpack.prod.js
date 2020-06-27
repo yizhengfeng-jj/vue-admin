@@ -6,8 +6,15 @@ const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const TerserPlugin = require("terser-webpack-plugin");
 const path = require("path");
+
+// 在耗时的loader上使用，感觉自己的项目，效果不佳
+const threadLoaderOption = {
+  workers: 3,
+  poolTimeout: 2000
+};
 
 const speed = new SpeedMeasurePlugin();
 module.exports = speed.wrap({
@@ -51,11 +58,25 @@ module.exports = speed.wrap({
       },
       {
         test: /\.js$/,
-        use: "babel-loader"
+        use: [
+          // 有问题感觉反而更慢了
+          // {
+          //   loader: "thread-loader",
+          //   options: threadLoaderOption
+          // },
+          "babel-loader"
+        ],
+        exclude: /node_modules/
       },
       {
         test: /\.vue$/,
-        use: "vue-loader"
+        use: [
+          {
+            loader: "thread-loader",
+            options: threadLoaderOption
+          },
+          "vue-loader"
+        ]
       },
       {
         test: /\.(woff|ttf|eot)$/,
@@ -99,8 +120,8 @@ module.exports = speed.wrap({
       }
     }),
     new CleanWebpackPlugin(),
-    new VueLoaderPlugin(),
-    new BundleAnalyzerPlugin()
+    new VueLoaderPlugin()
+    // new BundleAnalyzerPlugin()
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
@@ -110,13 +131,27 @@ module.exports = speed.wrap({
   // 提取公共函数和分离模块,为了让第三方的模块走缓存
   // 这里有一个问题如果走cdn打包会更快一点
   optimization: {
+    // 本地电脑开启多线程压缩，反而速度减慢
+    // minimizer: [
+    //   new TerserPlugin({
+    //     parallel: true,
+    //     cache: true
+    //   })
+    // ],
     splitChunks: {
       minSize: 0,
       cacheGroups: {
-        commons: {
+        vander: {
           test: /[\\/]node_modules[\\/]/,
           name: "vue-vander",
-          chunks: "all"
+          chunks: "all",
+          priority: -10
+        },
+        common: {
+          name: "common",
+          chunks: "all",
+          minChunks: 2,
+          priority: -20
         }
       }
     }

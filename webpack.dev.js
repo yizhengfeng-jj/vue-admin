@@ -69,7 +69,15 @@ module.exports = speed.wrap({
       },
       {
         test: /\.js$/,
-        use: "babel-loader",
+        use: [
+          // {
+          //   loader: "thread-loader",
+          //   options: {
+          //     workers: 3
+          //   }
+          // },
+          "babel-loader"
+        ],
         exclude: /node_modules/
       },
       {
