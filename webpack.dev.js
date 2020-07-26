@@ -6,7 +6,7 @@ const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // 清除dist目录  clean-webpack-plugin最新更改必须是解构f
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const path = require("path");
 
 const speed = new SpeedMeasurePlugin();
@@ -23,7 +23,7 @@ module.exports = speed.wrap({
   },
   devServer: {
     stats: "errors-only", // 打包时候的日志优化,配合下面的插件使用
-    port: 9000,
+    port: 9001,
     hotOnly: true, // 因为是vue项目，有了vue-loader之后，只需要设置hotOnly就能热
     proxy: {
       "/api2": {
@@ -39,25 +39,41 @@ module.exports = speed.wrap({
     }
   },
   devtool: "source-map",
+  context: process.cwd(),
   resolve: {
     alias: {
       vue: "vue/dist/vue",
       "@": path.resolve("src"),
       Components: path.resolve("src/components")
     },
+    modules: [path.resolve(__dirname, "node_modules")],
     extensions: [".js", ".vue"]
   },
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        use: ["vue-style-loader", "css-loader"]
       },
       {
         test: /\.less$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
+          {
+            loader: path.resolve(__dirname, "./loaders/removeUiModule.js"),
+            options: {
+              moduleName: "el-",
+              diretiveRule: /__.{8}_json/
+            }
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[local]__[hash:base64:8]_json"
+              }
+            }
+          },
           "less-loader",
           {
             loader: "postcss-loader",
@@ -127,36 +143,40 @@ module.exports = speed.wrap({
     }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
-
+    // new webpack.DllReferencePlugin({
+    //   context: path.join(__dirname, '/json-dll'),
+    //   manifest: require("./json-dll/library.json")
+    // }),
     // scope hoisting减少webpack打包后的包裹
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new FriendlyErrorsWebpackPlugin(), // webpack打包日志优化
-    new BundleAnalyzerPlugin() // 打包体积插件
+
+    new FriendlyErrorsWebpackPlugin() // webpack打包日志优化
+    // new BundleAnalyzerPlugin() // 打包体积插件
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
     // })
-  ],
+  ]
 
   // 提取公共函数和分离模块,为了让第三方的模块走缓存
   // 这里有一个问题如果走cdn打包会更快一点
-  optimization: {
-    splitChunks: {
-      minSize: 0,
-      cacheGroups: {
-        vander: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vue-vander",
-          chunks: "all",
-          priority: -10
-        },
-        common: {
-          name: "common",
-          chunks: "all",
-          minChunks: 2,
-          priority: -20
-        }
-      }
-    }
-  }
+  // optimization: {
+  //   splitChunks: {
+  //     minSize: 0,
+  //     cacheGroups: {
+  //       vander: {
+  //         test: /[\\/]node_modules[\\/]/,
+  //         name: "vue-vander",
+  //         chunks: "all",
+  //         priority: -10
+  //       },
+  //       common: {
+  //         name: "common",
+  //         chunks: "all",
+  //         minChunks: 2,
+  //         priority: -20
+  //       }
+  //     }
+  //   }
+  // }
 });

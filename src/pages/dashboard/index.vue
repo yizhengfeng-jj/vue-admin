@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="16" class="chart-row">
+    <el-row :gutter="16" :class="$style['chart-row']">
       <el-col :span="6">
         <highcharts :options="lineOptions" :style="visilizeObj" />
       </el-col>
@@ -14,7 +14,7 @@
         <highcharts :options="maxBlogOptions" :style="visilizeObj" />
       </el-col>
     </el-row>
-    <el-row :gutter="24" class="chart-row">
+    <el-row :gutter="24" :class="$style['chart-row']">
       <el-col :span="12">
         <highcharts :options="scatterOptions" :styl="visilizeObj" />
       </el-col>
@@ -43,7 +43,7 @@ import {
   scatterOptions,
   chinaMapConfig
 } from "../../config";
-import citys from "@/util/chartData.js";
+import citys from "@/util/chartData.json";
 
 vue.use(Row);
 vue.use(Col);
@@ -133,7 +133,7 @@ export default {
       const { data } = res || {};
       const positionData = [];
       const positionPointData = [];
-
+      console.log(citys, "citys....");
       // 设置位置点
       data.forEach(city => {
         const { username, address } = city || {};
@@ -181,7 +181,7 @@ export default {
   }
 };
 </script>
-<style scoped lang="less">
+<style module lang="less">
 .chart-row {
   margin-bottom: 16px;
 }

@@ -1,37 +1,37 @@
 <template>
-  <el-row :gutter="24" class="self-main">
+  <el-row :gutter="24" :class="$style['self-main']">
     <el-col :span="7">
-      <div class="info">
-        <div class="info-head">
-          <div class="info-head_pic">
+      <div :class="$style.info">
+        <div :class="$style['info-head']">
+          <div :class="$style['info-head_pic']">
             <p>
               <img :src="userInfo.imgPath" />
             </p>
             <p>{{ userInfo.userName || "这个人很懒什么都没留下" }}</p>
             <p>{{ userInfo.nickName || "这个人很懒什么都没留下" }}</p>
           </div>
-          <div class="info-head_description">
+          <div :class="$style['info-head_description']">
             <p>
-              <span class="el-icon-suitcase-1"></span>
+              <span :class="$style['el-icon-suitcase-1']"></span>
               <span>{{
                 userInfo.description || "这个人很懒什么都没留下"
               }}</span>
             </p>
             <p>
-              <span class="el-icon-message"></span>
+              <span :class="$style['el-icon-message']"></span>
               <span>{{ userInfo.email || "这个人很懒什么都没留下" }}</span>
             </p>
             <p>
-              <span class="el-icon-location-outline"></span>
+              <span :class="$style['el-icon-location-outline']"></span>
               <span>{{ this.address || "这个人很懒什么都没留下" }}</span>
             </p>
           </div>
           <el-divider></el-divider>
         </div>
-        <div class="info-tag">
+        <div :class="$style['info-tag']">
           <div>标签</div>
           <div>
-            <el-tag v-for="item in userInfo.tags" :key="item" class="tag">{{
+            <el-tag v-for="item in userInfo.tags" :key="item" :class="$style.tag">{{
               item
             }}</el-tag>
           </div>
@@ -39,8 +39,8 @@
       </div>
     </el-col>
     <el-col :span="17">
-      <div class="blog">
-        <div class="title">文章</div>
+      <div :class="$style.blog">
+        <div :class="$style.title">文章</div>
         <blog-show
           v-for="(blog, index) in blogs"
           :key="index"
@@ -63,7 +63,7 @@ import { mapState } from "vuex";
 import { Row, Col, Divider, Tag } from "element-ui";
 import axios from "axios";
 import BlogShow from "Components/BlogShow";
-import citys from "@/util/chartData.js";
+import citys from "@/util/chartData.json";
 
 Vue.use(Row);
 Vue.use(Col);
@@ -99,7 +99,7 @@ export default {
   })
 };
 </script>
-<style lang="less" scoped>
+<style lang="less" module>
 .self-main {
   display: flex;
 

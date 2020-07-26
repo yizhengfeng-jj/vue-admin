@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">博客展示</div>
+    <div :class="$style.title">博客展示</div>
     <el-table :data="tableData">
       <el-table-column prop="order" label="序号" />
       <el-table-column prop="createTime" label="创建时间" sortable />
@@ -14,7 +14,7 @@
       <el-table-column prop="description" label="描述" />
       <el-table-column prop="tags" label="标签">
         <template slot-scope="scope">
-          <el-tag v-for="tag in scope.row.tags" :key="tag" class="tag" disable-transitions>{{tag}}</el-tag>
+          <el-tag v-for="tag in scope.row.tags" :key="tag" :class="$style.tag" disable-transitions>{{tag}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="operator" label="操作">
@@ -131,7 +131,7 @@ export default {
   }
 };
 </script>
-<style lang='less' scoped>
+<style lang='less' module>
 .title {
   margin-bottom: 20px;
 }

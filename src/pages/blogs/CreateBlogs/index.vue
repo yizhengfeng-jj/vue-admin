@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="blog-header">
-      <div class="title">你好json</div>
+    <div :class="$style['blog-header']">
+      <div :class="$style.title">你好json</div>
       <div>
         表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。
       </div>
@@ -172,7 +172,7 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less" module>
 .blog-header {
   background-color: #fff;
   padding: 20px 0 30px 20px;

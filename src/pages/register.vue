@@ -1,6 +1,12 @@
 <template>
-  <div class="bg">
-    <el-form label-width="80px" class="login" :model="registerForm" :rules="rules" ref="register">
+  <div :class="$style.bg">
+    <el-form
+      label-width="80px"
+      :class="$style.login"
+      :model="registerForm"
+      :rules="rules"
+      ref="register"
+    >
       <el-form-item label="用户名" prop="username">
         <el-input placeholder="请输入用户名" v-model="registerForm.username" />
       </el-form-item>
@@ -8,15 +14,23 @@
         <el-input placeholder="请输入密码" v-model="registerForm.password" />
       </el-form-item>
       <el-form-item label="确认密码" prop="confirmPassword">
-        <el-input placeholder="请输入密码" v-model="registerForm.confirmPassword" />
+        <el-input
+          placeholder="请输入密码"
+          v-model="registerForm.confirmPassword"
+        />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="register" class="btn-regitser">注册</el-button>
+        <el-button
+          type="primary"
+          @click="register"
+          :class="$style['btn-regitser']"
+          >注册</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
 </template>
-<style type='text/css'>
+<style lang="less" module>
 .bg {
   background-image: url("../img/bg3.jpg");
   background-size: 100%;

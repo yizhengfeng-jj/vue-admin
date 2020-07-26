@@ -6,7 +6,13 @@
       @input="changeValue"
       @blur="changeTags"
     />
-    <el-tag v-for="(tag, index) in tags" :key="tag" closable @close="closeTag(index)">{{tag}}</el-tag>
+    <el-tag
+      v-for="(tag, index) in tags"
+      :key="tag"
+      closable
+      @close="closeTag(index)"
+      >{{ tag }}</el-tag
+    >
   </div>
 </template>
 <script>
@@ -23,7 +29,7 @@ export default {
   },
   mixins: [emitter],
   watch: {
-    form: function () {
+    form: function() {
       this.tags = this.form.tags.tags;
     }
   },
@@ -57,8 +63,12 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less" module>
 .el-tag:not(:nth-child(1)) {
   margin: 8px 8px 0 0;
+}
+
+.el-test {
+  color: red;
 }
 </style>

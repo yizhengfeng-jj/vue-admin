@@ -120,7 +120,12 @@ module.exports = speed.wrap({
       }
     }),
     new CleanWebpackPlugin(),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+
+    // dll 分包插件
+    new webpack.DllReferencePlugin({
+      manifest: require('./json-dll/library.json')
+    })
     // new BundleAnalyzerPlugin()
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
@@ -141,12 +146,12 @@ module.exports = speed.wrap({
     splitChunks: {
       minSize: 0,
       cacheGroups: {
-        vander: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vue-vander",
-          chunks: "all",
-          priority: -10
-        },
+        // vander: {
+        //   test: /[\\/]node_modules[\\/]/,
+        //   name: "vue-vander",
+        //   chunks: "all",
+        //   priority: -10
+        // },
         common: {
           name: "common",
           chunks: "all",

@@ -1,6 +1,6 @@
 <template>
-  <div class="self-setting">
-    <el-tabs :tab-position="tabPosition" class="tabs">
+  <div :class="$style['self-setting']">
+    <el-tabs :tab-position="tabPosition" :class="$style.tabs">
       <el-tab-pane label="个人设置">
         <self-setting />
       </el-tab-pane>
@@ -27,7 +27,7 @@ export default {
   })
 };
 </script>
-<style lang="less" scoped>
+<style lang="less" module>
 .self-setting {
   background-color: #fff;
   padding: 16px 0;

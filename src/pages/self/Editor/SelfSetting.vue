@@ -1,6 +1,6 @@
 <template>
-  <div class="setting">
-    <div class="setting_title">个人设置</div>
+  <div :class="$style.setting">
+    <div :class="$style.setting_title">个人设置</div>
     <el-row>
       <el-col :span="8">
         <el-form :model="selfForm" :rules="rules" ref="selfForm">
@@ -20,7 +20,7 @@
             <input-label :form="selfForm" />
           </el-form-item>
           <el-form-item prop="address" label="作者地址">
-            <el-select v-model="selfForm.address" class="city-info">
+            <el-select v-model="selfForm.address" :class="$style['city-info']">
               <el-option
                 v-for="city in citys"
                 :value="city.value"
@@ -31,7 +31,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="16" class="upload">
+      <el-col :span="16" :class="$style.upload">
         <div>头像</div>
         <div>
           <img :src="userInfo.imgPath" />
@@ -45,7 +45,7 @@
             :multiple="true"
           >
             <el-button>
-              <span class="el-icon-upload2"></span>
+              <span :class="$style['el-icon-upload2']"></span>
               上传图片
             </el-button>
           </el-upload>
@@ -71,7 +71,7 @@ import {
 import store from "store";
 import axios from "axios";
 import InputLabel from "@/components/InputLabel";
-import citys from "@/util/chartData.js";
+import citys from "@/util/chartData.json";
 import setLogs from '../../../util/setLogs';
 
 Vue.use(Row);
@@ -251,7 +251,7 @@ export default {
   }
 };
 </script>
-<style lang="less" scpoed>
+<style lang="less" module>
 .setting {
   padding: 0 24px;
 

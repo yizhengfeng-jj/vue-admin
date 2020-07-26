@@ -1,31 +1,33 @@
 <template>
-  <div class="blog-component">
-    <div class="head">{{title}}</div>
-    <div class="tags">
-      <el-tag v-for="tag in tags" :key="tag" class="tag">{{tag}}</el-tag>
+  <div :class="$style['blog-component']">
+    <div :class="$style.head">{{ title }}</div>
+    <div :class="$style.tags">
+      <el-tag v-for="tag in tags" :key="tag" :class="$style.tag">{{
+        tag
+      }}</el-tag>
     </div>
-    <div class="content">
+    <div :class="$style.content">
       <span>博客内容：</span>
-      {{content}}
+      {{ content }}
     </div>
-    <div class="blog_info">
-      <span class="blog_info--author">{{author}}</span> 发布于
-      <span class="blog_info--adress">{{address}}</span>
-      <span class="blog_info--time">{{time}}</span>
+    <div :class="$style['blog_info']">
+      <span :class="$style['blog_info--author']">{{ author }}</span> 发布于
+      <span :class="$style['blog_info--adress']">{{ address }}</span>
+      <span :class="$style['blog_info--time']">{{ time }}</span>
     </div>
-    <div class="blog_like">
+    <div :class="$style['blog_like']">
       <span>
-        <i class="el-icon-star-on"></i>
-        {{likeCount}}
+        <i :class="$style['el-icon-star-on']"></i>
+        {{ likeCount }}
       </span>
       <span>
-        <i class="el-icon-view"></i>
-        {{collectionCount}}
+        <i :class="$style['el-icon-view']"></i>
+        {{ collectionCount }}
       </span>
     </div>
   </div>
 </template>
-<style lang="less" scoped>
+<style lang="less" module>
 .blog-component {
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;

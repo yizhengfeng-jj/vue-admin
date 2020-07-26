@@ -2,10 +2,10 @@
   <el-table :data="dataSource">
     <el-table-column prop="level" label="级别">
       <template slot-scope="scope">
-        <span v-if="scope.row.level === '1'" class="info">{{
+        <span v-if="scope.row.level === '1'" :class="$style.info">{{
           levelInfo[scope.row.level]
         }}</span>
-        <span v-if="scope.row.level === '2'" class="dangerous">{{
+        <span v-if="scope.row.level === '2'" :class="$style.dangerous">{{
           levelInfo[scope.row.level]
         }}</span>
       </template>
@@ -21,7 +21,7 @@
   </el-table>
 </template>
 
-<style lang="less">
+<style lang="less" module>
 .info {
   color: green;
 }
@@ -46,7 +46,7 @@ export default {
     // 发送请求获取log数据
     axios.get("/api/log").then(result => {
       const { data } = result || {};
-
+      console.log(data, 'data...........');
       this.dataSource = data;
     });
   },

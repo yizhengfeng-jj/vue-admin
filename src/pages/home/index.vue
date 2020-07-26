@@ -1,13 +1,13 @@
 <template>
   <el-container>
-    <div class="vue-aside">
-      <el-header class="aside-header">
+    <div :class="$style['vue-aside']">
+      <el-header :class="$style['aside-header']">
         <img :src="userInfo.imgPath" />
         <span>{{ userInfo.userName }}</span>
       </el-header>
-      <el-aside class="aside">
+      <el-aside :class="$style.aside">
         <el-menu
-          class="el-menu-vertical-demo menu-demo"
+          :class="[$style['el-menu-vertical-demo'], $style['menu-demo']]"
           background-color="#001529"
           text-color="#fff"
           active-text-color="#ffd04b"
@@ -16,74 +16,74 @@
         >
           <el-submenu index="1">
             <template slot="title">
-              <i class="el-icon-document"></i>
+              <i :class="$style['el-icon-document']"></i>
               <span>个人中心</span>
             </template>
             <el-menu-item index="1-1">
               <router-link to="/home/selfDetail" slot="title">
-                <i class="el-icon-document"></i>
+                <i :class="$style['el-icon-document']"></i>
                 <span>个人中心</span>
               </router-link>
             </el-menu-item>
             <el-menu-item index="1-2">
               <router-link to="/home/selfEditor" slot="title">
-                <i class="el-icon-document"></i>
+                <i :class="$style['el-icon-document']"></i>
                 <span>个人设置</span>
               </router-link>
             </el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
-              <i class="el-icon-document"></i>
+              <i :class="$style['el-icon-document']"></i>
               <span>博客中心</span>
             </template>
             <el-menu-item index="2-1">
               <router-link to="/home/blogs/info/new" slot="title">
-                <i class="el-icon-document"></i>
+                <i :class="$style['el-icon-document']"></i>
                 <span>博客中心</span>
               </router-link>
             </el-menu-item>
             <el-menu-item index="2-2">
               <router-link to="/home/blogs/show" slot="title">
-                <i class="el-icon-document"></i>
+                <i :class="$style['el-icon-document']"></i>
                 <span>博客预览</span>
               </router-link>
             </el-menu-item>
           </el-submenu>
           <el-menu-item index="3">
             <router-link to="/home/dashboard" slot="title">
-              <i class="el-icon-document"></i>
+              <i :class="$style['el-icon-document']"></i>
               <span>dashboard</span>
             </router-link>
           </el-menu-item>
           <el-menu-item index="4">
-            <i class="el-icon-document"></i>
+            <i :class="$style['el-icon-document']"></i>
             <span slot="title">列表页</span>
           </el-menu-item>
           <el-menu-item index="5">
             <router-link to="/home/log" slot="title">
-              <i class="el-icon-document"></i>
+              <i :class="$style['el-icon-document']"></i>
               <span>日志操作11</span>
             </router-link>
           </el-menu-item>
         </el-menu>
       </el-aside>
     </div>
-    <el-container class="main">
-      <el-header class="header">
-        <i class="el-icon-s-fold collaspe"></i>
-        <div class="header_operator">
-          <i class="el-icon-search"></i>
+    <el-container :class="$style.main">
+      <el-header :class="$style.header">
+        <i :class="[$style['el-icon-s-fold'], $style.collaspe]"></i>
+        <div :class="$style['header_operator']">
+          <i :class="$style['el-icon-search']"></i>
           <el-tooltip content="源码地址" placement="bottom"
             ><a
               href="https://github.com/yizhengfeng-jj/vue-admin"
               target="_blank"
-              class="target"
-              ><i class="el-icon-question"></i></a
+              :class="$style.target"
+              ><i :class="$style['el-icon-question']"></i></a
           ></el-tooltip>
-          <i class="el-icon-message"></i>
+          <i :class="$style['el-icon-message']"></i>
           <el-dropdown trigger="click" @command="clickMenu">
-            <div class="header_operator_info">
+            <div :class="$style['header_operator_info']">
               <img :src="userInfo.imgPath" />
               <span>{{ userInfo.userName }}</span>
             </div>
@@ -91,7 +91,7 @@
               <el-dropdown-item>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-select v-model="lang" class="header_operator_lang">
+          <el-select v-model="lang" :class="$style['header_operator_lang']">
             <el-option
               v-for="item in langOptions"
               :label="item.label"
@@ -192,15 +192,15 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" module>
 /* 更改element-ui样式 */
 .menu-demo {
-  /deep/ .is-active {
+  .is-active {
     background-color: #1890ff !important;
     color: #fff !important;
   }
 
-  /deep/ .el-submenu .el-menu-item {
+  .el-submenu .el-menu-item {
     padding: 0 !important;
   }
 
