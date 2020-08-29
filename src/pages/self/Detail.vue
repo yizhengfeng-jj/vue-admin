@@ -61,7 +61,7 @@
 import Vue from "vue";
 import { mapState } from "vuex";
 import { Row, Col, Divider, Tag } from "element-ui";
-import axios from "axios";
+import axios from "@/service/http";
 import BlogShow from "Components/BlogShow";
 import citys from "@/util/chartData.json";
 

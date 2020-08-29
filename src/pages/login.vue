@@ -51,7 +51,7 @@
 import Vue from "vue";
 import { mapActions } from "vuex";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
-// import axios from "axios";
+// import axios from "@/service/http";
 import axios from "../service/http";
 import store from "store";
 import setLogs from "../util/setLogs";
@@ -70,39 +70,41 @@ export default {
   data: () => ({
     loginForm: {
       username: "",
-      password: ""
+      password: "",
     },
     rules: {
       username: [
         {
           required: true,
-          message: "用户名不能为空"
-        }
+          message: "用户名不能为空",
+        },
       ],
       password: [
         {
           required: true,
-          message: "密码不能为空"
-        }
-      ]
-    }
+          message: "密码不能为空",
+        },
+      ],
+    },
   }),
   methods: {
     ...mapActions(["changeUserInfo"]),
     login: function() {
       const { username, password } = this.loginForm;
 
-      this.$refs["loginForm"].validate(valid => {
+      this.$refs["loginForm"].validate((valid) => {
         if (valid) {
-          axios.post("/api/login", { username, password }).then(res => {
+          axios.post("/api/login", { username, password }).then((res) => {
             const { data, error } = res;
 
             const { token, userId } = data || {};
 
             store.set("httpInfo", { userId, token });
 
+            console.log(username);
+
             if (error === 0) {
-              axios.get(`/api/getUserInfo?userId=${userId}`).then(result => {
+              axios.get(`/api/getUserInfo?userId=${userId}`).then((result) => {
                 const { error, data } = result;
                 const { imgPath } = data || {};
 
@@ -110,7 +112,7 @@ export default {
                 store.set("userInfo", { ...data, token, userId });
 
                 Message.success({
-                  message: "登录成功"
+                  message: "登录成功",
                 });
 
                 // 发送日志
@@ -118,7 +120,7 @@ export default {
                   level: 1,
                   user: username,
                   action: "登录",
-                  description: "登录 vue-admin界面"
+                  description: "登录 vue-admin界面",
                 });
 
                 this.changeUserInfo(data);
@@ -128,13 +130,13 @@ export default {
               });
             } else {
               Message.error({
-                message: "您还没有注册"
+                message: "您还没有注册",
               });
             }
           });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -30,7 +30,7 @@
 import vue from "vue";
 import { Table, TableColumn, Tag, MessageBox, Message } from "element-ui";
 import store from 'store';
-import axios from "axios";
+import axios from "@/service/http";
 import moment from "moment";
 import setLogs from '../../../util/setLogs';
 

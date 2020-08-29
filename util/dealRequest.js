@@ -259,7 +259,7 @@ const upload = (req, res) => {
       const exot = name.split(".")[1];
       const imgPath = `public/${userId}.${exot}`;
       const sql = `update users set ifUpload=1, imgPath='${imgPath} 'where userId='${userId}'`;
-
+      console.log(path, 'path......');
       exec(sql).then(result => {
         fs.rename(path, `public/${userId}.${exot}`, error => {
           resolve(imgPath);

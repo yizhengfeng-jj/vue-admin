@@ -32,7 +32,7 @@
 <script>
 import vue from "vue";
 import { Form, FormItem, Input, Button } from "element-ui";
-import axios from "axios";
+import axios from "@/service/http";
 import store from "store";
 import InputLabel from "@/components/InputLabel";
 import setLogs from "../../../util/setLogs";

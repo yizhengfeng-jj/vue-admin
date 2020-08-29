@@ -30,7 +30,7 @@ import * as highChartsProj4 from "@/util/proj4.js";
 import Highcharts from "highcharts";
 import { Chart } from "highcharts-vue";
 import { Row, Col } from "element-ui";
-import axios from "axios";
+import axios from "@/service/http";
 import loadWordcloud from "highcharts/modules/wordcloud"; // 词云图形
 import highChartsMore from "highcharts/highcharts-more";
 import highchartsGauge from "highcharts/modules/solid-gauge"; // 仪表盘图形

@@ -19,7 +19,7 @@ module.exports = speed.wrap({
 
     // 解决报错
     // Cannot use [chunkhash] or [contenthash] for chunk in '[name].[chunkhash].js' (use [hash] instead)
-    filename: `bundle-[hash].js`
+    filename: `bundle-[hash].js`,
   },
   devServer: {
     stats: "errors-only", // 打包时候的日志优化,配合下面的插件使用
@@ -29,14 +29,18 @@ module.exports = speed.wrap({
       "/api2": {
         target: "https://data.jianshukeji.com",
         pathRewrite: {
-          "^/api2": ""
+          "^/api2": "",
         },
-        changeOrigin: true
+        changeOrigin: true,
       },
       "/api": {
-        target: "http://localhost:8000"
-      }
-    }
+        target: "http://localhost:8000",
+      },
+      "/expressApi": {
+        target: "http://localhost:8001",
+        changeOrigin: true,
+      },
+    },
   },
   devtool: "source-map",
   context: process.cwd(),
@@ -44,44 +48,44 @@ module.exports = speed.wrap({
     alias: {
       vue: "vue/dist/vue",
       "@": path.resolve("src"),
-      Components: path.resolve("src/components")
+      Components: path.resolve("src/components"),
     },
     modules: [path.resolve(__dirname, "node_modules")],
-    extensions: [".js", ".vue"]
+    extensions: [".js", ".vue"],
   },
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ["vue-style-loader", "css-loader"]
+        use: ["vue-style-loader", "css-loader"],
       },
       {
         test: /\.less$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: path.resolve(__dirname, "./loaders/removeUiModule.js"),
+            loader: "remove-ui-hash-loader",
             options: {
               moduleName: "el-",
-              diretiveRule: /__.{8}_json/
-            }
+              diretiveRule: /__.{8}_json/,
+            },
           },
           {
             loader: "css-loader",
             options: {
               modules: {
-                localIdentName: "[local]__[hash:base64:8]_json"
-              }
-            }
+                localIdentName: "[local]__[hash:base64:8]_json",
+              },
+            },
           },
           "less-loader",
           {
             loader: "postcss-loader",
             options: {
-              plugins: () => [require("autoprefixer")()] // 必须指定bowserslist才会生效，我是在package.json里面指定的
-            }
-          }
-        ]
+              plugins: () => [require("autoprefixer")()], // 必须指定bowserslist才会生效，我是在package.json里面指定的
+            },
+          },
+        ],
       },
       {
         test: /\.js$/,
@@ -92,44 +96,44 @@ module.exports = speed.wrap({
           //     workers: 3
           //   }
           // },
-          "babel-loader"
+          "babel-loader",
         ],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.vue$/,
-        use: "vue-loader"
+        use: "vue-loader",
       },
       {
         test: /\.(woff|ttf|eot)$/,
-        use: "file-loader"
+        use: "file-loader",
       },
       {
         test: /\.(jpg|jpeg|gif|png)/,
         use: {
           loader: "url-loader",
           options: {
-            limit: 8000
-          }
-        }
+            limit: 8000,
+          },
+        },
       },
       // 将juqery, proj4定义在window上，这样第三方插件就可以直接用
       // proj4.js是从网上下载的UMD文件，es6模块化还不知道怎么做
       // 这个意思是有地方引入这个文件，就把这个文件的对象挂载到window.proj4上
       {
         test: require.resolve("./src/util/proj4.js"),
-        use: "expose-loader?proj4"
-      }
-    ]
+        use: "expose-loader?proj4",
+      },
+    ],
   },
 
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "vue.css"
+      filename: "vue.css",
     }),
     new OptimizeCssAssetsWebpackPlugin({
       assetNameRegExp: /\.css$/g,
-      cssProcessor: require("cssnano")
+      cssProcessor: require("cssnano"),
     }),
 
     new HtmlWebpackPlugin({
@@ -138,8 +142,8 @@ module.exports = speed.wrap({
         removeComments: true,
         minifyCSS: true,
         minifyJS: true,
-        collapseWhitespace: true
-      }
+        collapseWhitespace: true,
+      },
     }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
@@ -150,13 +154,13 @@ module.exports = speed.wrap({
     // scope hoisting减少webpack打包后的包裹
     new webpack.optimize.ModuleConcatenationPlugin(),
 
-    new FriendlyErrorsWebpackPlugin() // webpack打包日志优化
+    new FriendlyErrorsWebpackPlugin(), // webpack打包日志优化
     // new BundleAnalyzerPlugin() // 打包体积插件
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
     // })
-  ]
+  ],
 
   // 提取公共函数和分离模块,为了让第三方的模块走缓存
   // 这里有一个问题如果走cdn打包会更快一点

@@ -38,7 +38,7 @@
         </div>
         <div>
           <el-upload
-            action="http://localhost:9000/api/upload"
+            action="http://localhost:9001/expressApi/upload"
             :on-success="dealSuccess"
             :on-error="dealError"
             :headers="headers"
@@ -69,7 +69,7 @@ import {
   Option
 } from "element-ui";
 import store from "store";
-import axios from "axios";
+import axios from "@/service/http";
 import InputLabel from "@/components/InputLabel";
 import citys from "@/util/chartData.json";
 import setLogs from '../../../util/setLogs';

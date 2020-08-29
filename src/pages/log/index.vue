@@ -33,7 +33,7 @@
 <script>
 import Vue from "vue";
 import { Table, TableColumn } from "element-ui";
-import axios from "axios";
+import axios from "@/service/http";
 import moment from "moment";
 
 // 注册

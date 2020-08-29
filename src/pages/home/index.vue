@@ -83,7 +83,7 @@
           ></el-tooltip>
           <i :class="$style['el-icon-message']"></i>
           <el-dropdown trigger="click" @command="clickMenu">
-            <div :class="$style['header_operator_info']">
+            <div :class="$style['header_operator_info']" @click="preventClick">
               <img :src="userInfo.imgPath" />
               <span>{{ userInfo.userName }}</span>
             </div>
@@ -124,7 +124,7 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Tooltip
+  Tooltip,
 } from "element-ui";
 // import axios from "../../service/http";
 
@@ -145,10 +145,10 @@ Vue.use(Tooltip);
 export default {
   name: "Home",
   computed: {
-    ...mapState(["imgPath", "userInfo"])
+    ...mapState(["imgPath", "userInfo"]),
   },
   methods: {
-    ...mapActions(["changeImgPath", "changeUserInfo"])
+    ...mapActions(["changeImgPath", "changeUserInfo"]),
   },
   mounted: function() {
     // 设置数据
@@ -171,25 +171,30 @@ export default {
       langOptions: [
         {
           label: "中文",
-          value: "chinaese"
+          value: "chinaese",
         },
         {
           label: "英文",
-          value: "english"
+          value: "english",
         },
         {
           label: "繁体",
-          value: "fan"
-        }
+          value: "fan",
+        },
       ],
-      lang: "chinaese"
+      lang: "chinaese",
     };
   },
   methods: {
     clickMenu: function() {
-      location.href = "http://localhost:9000";
-    }
-  }
+      location.href = "http://localhost:9001";
+    },
+    preventClick: function(e) {
+      console.log('rrr');
+      e.preventDefault();
+      e.stopPropagation();
+    },
+  },
 };
 </script>
 <style lang="less" module>

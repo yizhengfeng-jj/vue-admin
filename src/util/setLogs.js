@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "@/service/http";
 
 const setLogs = data => {
   const time = new Date().getTime();

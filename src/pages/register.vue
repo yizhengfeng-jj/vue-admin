@@ -35,6 +35,10 @@
   background-image: url("../img/bg3.jpg");
   background-size: 100%;
   height: 100vh;
+
+  .el-form-item__label {
+    color: #fff;
+  }
 }
 
 .login {
@@ -51,7 +55,7 @@
 <script>
 import Vue from "vue";
 import { Form, Input, FormItem, Button, Message } from "element-ui";
-import axios from "axios";
+import axios from "@/service/http";
 import store from "store";
 
 Vue.use(Form);
@@ -82,58 +86,60 @@ export default {
       registerForm: {
         username: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
       },
       rules: {
         username: [
           {
             required: true,
-            message: "用户名不能为空"
-          }
+            message: "用户名不能为空",
+          },
         ],
         password: [
           {
             required: true,
-            message: "密码不能为空"
-          }
+            message: "密码不能为空",
+          },
         ],
         confirmPassword: [
           {
             required: true,
-            message: "确认密码不能为空"
+            message: "确认密码不能为空",
           },
           {
-            validator: testPassword
-          }
-        ]
-      }
+            validator: testPassword,
+          },
+        ],
+      },
     };
   },
   methods: {
     register: function() {
       const { username, password } = this.registerForm;
 
-      this.$refs["register"].validate(valid => {
+      this.$refs["register"].validate((valid) => {
         if (valid) {
-          axios.post("/api/register", { username, password }).then(result => {
-            const { error, data } = result;
+          axios
+            .post("/expressApi/register", { username, password })
+            .then((result) => {
+              const { error, data } = result;
 
-            if (!result.error) {
-              Message.success({
-                message: "注册成功"
-              });
+              if (!result.error) {
+                Message.success({
+                  message: "注册成功",
+                });
 
-              // 跳转到登陆页面
-              this.$router.push("/login");
-            } else {
-              Message.error({
-                message: "注册失败"
-              });
-            }
-          });
+                // 跳转到登陆页面
+                this.$router.push("/login");
+              } else {
+                Message.error({
+                  message: "注册失败",
+                });
+              }
+            });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>

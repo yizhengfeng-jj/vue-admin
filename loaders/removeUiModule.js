@@ -16,6 +16,7 @@ const schemaOptions = {
 };
 
 module.exports = function(source, map, meta) {
+  console.log(source, 'source.....');
   const options = getOptions(this);
   const { moduleName = "", diretiveRule } = options || {};
 
