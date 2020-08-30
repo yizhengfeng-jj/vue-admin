@@ -94,7 +94,7 @@ export default {
 
       this.$refs["loginForm"].validate((valid) => {
         if (valid) {
-          axios.post("/api/login", { username, password }).then((res) => {
+          axios.post("/koa/login", { username, password }).then((res) => {
             const { data, error } = res;
 
             const { token, userId } = data || {};

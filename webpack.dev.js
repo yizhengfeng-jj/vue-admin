@@ -40,6 +40,10 @@ module.exports = speed.wrap({
         target: "http://localhost:8001",
         changeOrigin: true,
       },
+      "/koa": {
+        target: "http://localhost:8002",
+        changeOrigin: true,
+      },
     },
   },
   devtool: "source-map",

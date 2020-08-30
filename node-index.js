@@ -71,29 +71,29 @@ routers.post("/api/createBlog", (req, res) => {
 });
 
 // 登陆接口
-routers.post("/api/login", (req, res) => {
-  const fork = require('child_process').fork; // 创建进程函数
-  const child = fork('./process/calaculate.js'); // 创建一个进程
+// routers.post("/api/login", (req, res) => {
+//   const fork = require('child_process').fork; // 创建进程函数
+//   const child = fork('./process/calaculate.js'); // 创建一个进程
 
-  // 父进程监听
-  child.on('message', (data) => {
+//   // 父进程监听
+//   child.on('message', (data) => {
 
-    // 获取子进程的id
-    console.log(data, 'child pid...');
-  })
+//     // 获取子进程的id
+//     console.log(data, 'child pid...');
+//   })
 
-  // 父进程发送消息
-  child.send('test');
+//   // 父进程发送消息
+//   child.send('test');
 
-  login(req, res).then(
-    (result) => {
-      return res.end(JSON.stringify(new SuccessModal(result, "登录成功")));
-    },
-    (error) => {
-      return res.end(JSON.stringify(new ErrorModal("", error)));
-    }
-  );
-});
+//   login(req, res).then(
+//     (result) => {
+//       return res.end(JSON.stringify(new SuccessModal(result, "登录成功")));
+//     },
+//     (error) => {
+//       return res.end(JSON.stringify(new ErrorModal("", error)));
+//     }
+//   );
+// });
 
 // 注册接口
 // routers.post("/api/register", (req, res) => {
