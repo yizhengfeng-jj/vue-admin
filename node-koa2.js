@@ -14,18 +14,18 @@ app.use(
   })
 );
 
-app.use(
-  koaBody({
-    multipart: true,
-    formidable: {
-      uploadDir: path.resolve(__dirname, "./public"),
-    },
-  })
-);
+// app.use(
+//   koaBody({
+//     multipart: true,
+//     formidable: {
+//       uploadDir: path.resolve(__dirname, "./public"),
+//     },
+//   })
+// );
 
 app.use(login.routes(), login.allowedMethods());
 app.use(upload.routes(), upload.allowedMethods());
 
 app.listen(8002, () => {
-  console.log("我是koa 服务");
+  console.log("我是koa 服务2");
 });

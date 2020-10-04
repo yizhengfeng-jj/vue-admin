@@ -8,12 +8,13 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const TerserPlugin = require("terser-webpack-plugin");
+const FileList = require("./plugins/fileList");
 const path = require("path");
 
 // 在耗时的loader上使用，感觉自己的项目，效果不佳
 const threadLoaderOption = {
   workers: 3,
-  poolTimeout: 2000
+  poolTimeout: 2000,
 };
 
 const speed = new SpeedMeasurePlugin();
@@ -25,22 +26,22 @@ module.exports = speed.wrap({
 
     // 解决报错
     // Cannot use [chunkhash] or [contenthash] for chunk in '[name].[chunkhash].js' (use [hash] instead)
-    filename: "bundle-[contenthash].js"
+    filename: "bundle-[contenthash].js",
   },
   devtool: "source-map",
   resolve: {
     alias: {
       vue: "vue/dist/vue",
       "@": path.resolve("src"),
-      Components: path.resolve("src/components")
+      Components: path.resolve("src/components"),
     },
-    extensions: [".js", ".vue"]
+    extensions: [".js", ".vue"],
   },
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.less$/,
@@ -51,10 +52,10 @@ module.exports = speed.wrap({
           {
             loader: "postcss-loader",
             options: {
-              plugins: () => [require("autoprefixer")()] // 必须指定bowserslist才会生效，我是在package.json里面指定的
-            }
-          }
-        ]
+              plugins: () => [require("autoprefixer")()], // 必须指定bowserslist才会生效，我是在package.json里面指定的
+            },
+          },
+        ],
       },
       {
         test: /\.js$/,
@@ -64,51 +65,51 @@ module.exports = speed.wrap({
           //   loader: "thread-loader",
           //   options: threadLoaderOption
           // },
-          "babel-loader"
+          "babel-loader",
         ],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.vue$/,
         use: [
           {
             loader: "thread-loader",
-            options: threadLoaderOption
+            options: threadLoaderOption,
           },
-          "vue-loader"
-        ]
+          "vue-loader",
+        ],
       },
       {
         test: /\.(woff|ttf|eot)$/,
-        use: "file-loader"
+        use: "file-loader",
       },
       {
         test: /\.(jpg|jpeg|gif|png)/,
         use: {
           loader: "url-loader",
           options: {
-            limit: 8000
-          }
-        }
+            limit: 8000,
+          },
+        },
       },
       // 将juqery, proj4定义在window上，这样第三方插件就可以直接用
       // proj4.js是从网上下载的UMD文件，es6模块化还不知道怎么做
       // 这个意思是有地方引入这个文件，就把这个文件的对象挂载到window.proj4上
       {
         test: require.resolve("./src/util/proj4.js"),
-        use: "expose-loader?proj4"
-      }
-    ]
+        use: "expose-loader?proj4",
+      },
+    ],
   },
 
   plugins: [
     new FriendlyErrorsWebpackPlugin(), // webpakck打包日志优化
     new MiniCssExtractPlugin({
-      filename: "vue.css"
+      filename: "vue.css",
     }),
     new optimizeCssAssetsWebpakPlugin({
       assetNameRegExp: /\.css$/g,
-      cssProcessor: require("cssnano")
+      cssProcessor: require("cssnano"),
     }),
     new HtmlWebpackPlugin({
       template: "index.html",
@@ -116,21 +117,24 @@ module.exports = speed.wrap({
         collapseWhitespace: true,
         minifyCSS: true,
         minifyJS: true,
-        removeComments: true
-      }
+        removeComments: true,
+      },
     }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
 
     // dll 分包插件
     new webpack.DllReferencePlugin({
-      manifest: require('./json-dll/library.json')
-    })
+      manifest: require("./json-dll/library.json"),
+    }),
     // new BundleAnalyzerPlugin()
     // new webpack.HotModuleReplacementPlugin() // 热跟新
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
     // })
+    new FileList({
+      filename: "fileList.md",
+    }),
   ],
 
   // 提取公共函数和分离模块,为了让第三方的模块走缓存
@@ -156,10 +160,10 @@ module.exports = speed.wrap({
           name: "common",
           chunks: "all",
           minChunks: 2,
-          priority: -20
-        }
-      }
-    }
+          priority: -20,
+        },
+      },
+    },
   },
-  stats: "errors-only" // 打包时候的日志优化,配合下面的插件使用
+  stats: "errors-only", // 打包时候的日志优化,配合下面的插件使用
 });

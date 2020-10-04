@@ -3,11 +3,12 @@ const { login } = require("../util/dealRequest");
 const { SuccessModal, ErrorModal } = require("../src/modal");
 const router = require("koa-router")();
 
-router.get("/", async (ctx, next) => {
-  ctx.body = {
-    message: "我是koa的程序",
-  };
-});
+// router.get("/", async (ctx, next) => {
+//   ctx.body = {
+//     message: "我是koa的程序",
+//   };
+//   next();
+// });
 
 router.post("/koa/login", async (ctx, next) => {
   console.log(ctx.headers);

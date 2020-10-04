@@ -7,6 +7,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin"); // 清除dist目
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const FileList = require("./plugins/fileList");
 const path = require("path");
 
 const speed = new SpeedMeasurePlugin();
@@ -47,7 +48,7 @@ module.exports = speed.wrap({
     },
   },
   devtool: "source-map",
-  context: process.cwd(),
+  // context: process.cwd(),
   resolve: {
     alias: {
       vue: "vue/dist/vue",
@@ -55,7 +56,7 @@ module.exports = speed.wrap({
       Components: path.resolve("src/components"),
     },
     modules: [path.resolve(__dirname, "node_modules")],
-    extensions: [".js", ".vue"],
+    extensions: [".vue", ".js"],
   },
   module: {
     rules: [
@@ -102,11 +103,14 @@ module.exports = speed.wrap({
           // },
           "babel-loader",
         ],
-        exclude: /node_modules/,
+        include: path.resolve(__dirname, "./src"),
+        //exclude: /node_modules/,
       },
       {
         test: /\.vue$/,
         use: "vue-loader",
+        //include: path.resolve(__dirname, "./src"),
+        exclude: /node_modules/,
       },
       {
         test: /\.(woff|ttf|eot)$/,
@@ -137,16 +141,16 @@ module.exports = speed.wrap({
     }),
     new OptimizeCssAssetsWebpackPlugin({
       assetNameRegExp: /\.css$/g,
-      cssProcessor: require("cssnano"),
+      // cssProcessor: require("cssnano"),
     }),
 
     new HtmlWebpackPlugin({
       template: "index.html",
       minify: {
-        removeComments: true,
-        minifyCSS: true,
-        minifyJS: true,
-        collapseWhitespace: true,
+        removeComments: false,
+        minifyCSS: false,
+        minifyJS: false,
+        collapseWhitespace: false,
       },
     }),
     new CleanWebpackPlugin(),
@@ -164,6 +168,9 @@ module.exports = speed.wrap({
     // new webpack.ProvidePlugin({
     //   "window.proj4": path.resolve('./src/util/proj4.js')
     // })
+    new FileList({
+      filename: "fileList.md",
+    }),
   ],
 
   // 提取公共函数和分离模块,为了让第三方的模块走缓存

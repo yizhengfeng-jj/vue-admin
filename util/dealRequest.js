@@ -1,4 +1,4 @@
-const { exec } = require("./dataBase");
+const { exec, query } = require("./dataBase");
 const moment = require("moment");
 const addSecurit = require("./crypto");
 const jwt = require("jsonwebtoken");
@@ -21,9 +21,9 @@ const getList = (req, res) => {
 
     sql += `order by createTime`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       // 对result的tags做处理
-      const res = result.map(item => {
+      const res = result.map((item) => {
         item.tags =
           typeof (item && item.tags) === "string" ? item.tags.split(",") : [];
 
@@ -48,7 +48,7 @@ const getSimpleBlog = (req, res) => {
       return;
     }
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       if (result && result[0] && result[0].tags) {
         const { tags } = result[0];
 
@@ -73,7 +73,7 @@ const deleteSimple = (req, res) => {
 
     const sql = `delete from blog where id=${id}`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       const { affectedRows } = result;
 
       if (affectedRows !== 0) {
@@ -93,14 +93,14 @@ const updateSimpleBlog = (req, res) => {
     let sql = `update blog set author='${author}', createTime=${createTime}, title='${title}', content='${content}', description='${description}', tags='${tags}' where id=${id}`;
 
     exec(sql).then(
-      result => {
+      (result) => {
         const { affectedRows } = result;
 
         if (affectedRows !== 0) {
           resolve("ok");
         }
       },
-      error => {}
+      (error) => {}
     );
   });
 };
@@ -112,7 +112,7 @@ const createBlog = (req, res) => {
     const createTime = new Date().getTime();
     const sql = `insert into blog(createTime, title, content, author, description, tags) values(${createTime}, '${title}', '${content}', '${author}', '${description}', '${tags}')`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       const { affectedRows, insertId } = result;
 
       if (affectedRows !== 0) {
@@ -127,10 +127,10 @@ login = (req, res) => {
     const { body } = req;
     const { username, password } = body || {};
     const loginTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-    const sql = `select * from users  where username='${username}' and password='${password}'`;
+    const sql = `select * from users  where username=? and password=?`;
 
-    exec(sql).then(
-      result => {
+    exec(sql, [username, password]).then(
+      (result) => {
         if (!result.length) {
           reject("您还没有注册");
 
@@ -151,7 +151,7 @@ login = (req, res) => {
         // 在这里做一层判断，如果有登陆信息，就更改登录次数，如果没有就插入
         const ifHasLoinSql = `Select * from loginCount where userId='${userId}'`;
 
-        exec(ifHasLoinSql).then(result => {
+        exec(ifHasLoinSql).then((result) => {
           const unLoging = Array.isArray(result) ? !result.length : true;
           let sql;
 
@@ -163,17 +163,17 @@ login = (req, res) => {
           }
 
           exec(sql).then(
-            res => {
-              // resolve({ userId, token });
+            (res) => {
+              resolve({ userId, token });
             },
-            error => {
+            (error) => {
               console.log(error, 22);
             }
           );
         });
         // const insertSql = `insert into loginCount(userId, loginTime, loginCount) values('${userId}', '${loginTime}', 1)`;
       },
-      error => {
+      (error) => {
         console.log(error, 5555);
       }
     );
@@ -185,20 +185,34 @@ register = (req, res) => {
     const { body } = req || {};
     const { username, password } = body || {};
 
-    // 把用户名进行加密
-    const userId = addSecurit(username);
-    const sql = `insert into users(userName, userId, password, nickName, ifUpload) values('${username}', '${userId}', '${password}', 'default', 0)`;
+    // 首先判断存不存在数据库
+    const sql = `select * from users where username='${username}' and password='${password}'`;
+    console.log(username, password);
+    console.log(sql, "sql..");
+    exec(sql).then((res) => {
+      // 把用户名进行加密
+      console.log(res, "res....");
 
-    return exec(sql).then(
-      result => {
-        const { insertId } = result;
+      if (!res.length) {
+        // 如果没有再去创建
+        const userId = addSecurit(username);
+        const sql = `insert into users(userName, userId, password, nickName, ifUpload) values('${username}', '${userId}', '${password}', 'default', 0)`;
 
-        resolve("ok");
-      },
-      error => {
-        reject("创造失败");
+        return exec(sql).then(
+          (result) => {
+            const { insertId } = result;
+
+            resolve("ok");
+          },
+          (error) => {
+            reject("创造失败");
+          }
+        );
+      } else {
+        // 已经存在提示已存在
+        reject("该用户已存在");
       }
-    );
+    });
   });
 };
 
@@ -210,7 +224,7 @@ const getUserInfo = (req, res) => {
     const sql = `select description, email, imgPath, nickName, address, tags, userName from users where userId='${userId}'`;
 
     if (ifLogin) {
-      exec(sql).then(result => {
+      exec(sql).then((result) => {
         // 把tags转换成数组
         if (result[0]) {
           result[0].tags =
@@ -221,6 +235,7 @@ const getUserInfo = (req, res) => {
         resolve(result[0]);
       });
     } else {
+      console.log("rrraaa", ifLogin, "ifLogin...");
       reject("您没有登录");
     }
   });
@@ -234,7 +249,7 @@ const editorUserInfo = (req, res) => {
     const { userName, nickName, email, description, tags, address } = body;
     const sql = `update users set username='${userName}', nickname='${nickName}', email='${email}', description='${description}', tags='${tags}', address='${address}' where userId='${userid}'`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       const { affectedRows } = result || {};
 
       if (affectedRows) {
@@ -259,9 +274,9 @@ const upload = (req, res) => {
       const exot = name.split(".")[1];
       const imgPath = `public/${userId}.${exot}`;
       const sql = `update users set ifUpload=1, imgPath='${imgPath} 'where userId='${userId}'`;
-      console.log(path, 'path......');
-      exec(sql).then(result => {
-        fs.rename(path, `public/${userId}.${exot}`, error => {
+      console.log(path, "path......");
+      exec(sql).then((result) => {
+        fs.rename(path, `public/${userId}.${exot}`, (error) => {
           resolve(imgPath);
         });
       });
@@ -275,13 +290,13 @@ const getLoginCount = (req, res) => {
     const sql = `select date_format(loginTime, '%Y-%m-%d') as time, count(loginCount) as num from loginCount where date(loginTime) > date(date_sub(now(), interval 7 day)) group by time`;
 
     exec(sql).then(
-      res => {
+      (res) => {
         // if (res.length) {
         //   resolve(res);
         // }
         resolve(res);
       },
-      error => {
+      (error) => {
         console.log(error);
       }
     );
@@ -293,18 +308,18 @@ const getWordCloud = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `select tags from blog`;
 
-    exec(sql).then(res => {
+    exec(sql).then((res) => {
       let tagsArr = [];
       let result = [];
       const objTags = {};
 
-      res.forEach(item => {
+      res.forEach((item) => {
         const { tags } = item || {};
         const arr = typeof tags === "string" ? tags.split(",") : tags;
         tagsArr = tagsArr.concat(arr);
       });
 
-      tagsArr.forEach(item => {
+      tagsArr.forEach((item) => {
         if (!objTags[item]) {
           objTags[item] = 1;
         } else {
@@ -328,7 +343,7 @@ const getActiveAuthor = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `select author,count(author) as num from blog group by author`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       resolve(result);
     });
   });
@@ -339,7 +354,7 @@ const getMaxBlog = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `select author,count(author) as num from blog group by author order by num desc limit 1`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       const data = Array.isArray(result) ? result[0] : result;
 
       resolve(data);
@@ -361,7 +376,7 @@ const getOneDayForScatter = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `SELECT T.timeHour, COUNT(T.timeHour) as number from (SELECT CONCAT(HOUR(FROM_UNIXTIME(createTime / 1000)), ':00') as timeHour from blog) as T GROUP BY T.timeHour`;
 
-    exec(sql).then(result => {
+    exec(sql).then((result) => {
       const data = Array.isArray(result) ? result : [];
 
       resolve(data);
@@ -374,7 +389,7 @@ const authorAddress = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `SELECT address, username, userId FROM users`;
 
-    exec(sql).then(res => {
+    exec(sql).then((res) => {
       resolve(res);
     });
   });
@@ -385,7 +400,7 @@ const getLogs = (req, res) => {
   return new Promise((resolve, reject) => {
     const sql = `SELECT level, time, user, action, description FROM log`;
 
-    exec(sql).then(res => {
+    exec(sql).then((res) => {
       resolve(res);
     });
   });
@@ -401,7 +416,7 @@ const setLogs = (req, res) => {
 
     const sql = `INSERT INTO log(level, time, user, action, description) values(${level}, '${time}', '${user}', '${action}', '${description}')`;
 
-    exec(sql).then(res => {
+    exec(sql).then((res) => {
       resolve(true);
     });
   });
@@ -425,5 +440,5 @@ module.exports = {
   getOneDayForScatter,
   authorAddress,
   getLogs,
-  setLogs
+  setLogs,
 };
